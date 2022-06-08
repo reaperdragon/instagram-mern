@@ -4,17 +4,17 @@ import dotenv from "dotenv";
 dotenv.config();
 
 //express async errors
-import 'express-async-errors'
+import "express-async-errors";
 
 //morgan
 import morgan from "morgan";
-
 
 // Database
 import connectDB from "./db/connection.js";
 
 //Routes
 import userRoute from "./routes/userRoute.js";
+import feedRoute from "./routes/feedRoute.js";
 
 //middleware
 import notFoundMiddleware from "./middleware/not-found.js";
@@ -35,6 +35,7 @@ app.get("/", (req, res) => {
 
 //Route
 app.use("/api/v1/user", userRoute);
+app.use("/api/v1/feed", feedRoute);
 
 app.use(notFoundMiddleware);
 app.use(errorHandlerMiddleware);
