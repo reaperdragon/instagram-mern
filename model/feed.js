@@ -14,19 +14,28 @@ const feedSchema = new mongoose.Schema({
     type: String,
     required: [true, "Please Provide Image for Feed"],
   },
-  desc: {
+  caption: {
     type: String,
     required: [true, "Please Provide Desc For Feed"],
+  },
+  postedBy: {
+    type: mongoose.Types.ObjectId,
+    ref: "User",
   },
   likes: {
     type: [String],
     default: [],
   },
-  comment: {
-    type: [mongoose.Types.ObjectId],
-    ref: "Comment",
-    default: [],
-  },
+  comments: [
+    {
+      comment: String,
+      postedBy: {
+        type: mongoose.Types.ObjectId,
+        ref: "User",
+        commentTime: { type: Date, default: Date.now() },
+      },
+    },
+  ],
 });
 
 export default mongoose.model("Feed", feedSchema);
