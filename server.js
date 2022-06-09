@@ -13,6 +13,7 @@ import morgan from "morgan";
 import connectDB from "./db/connection.js";
 
 //Routes
+import authRoute from "./routes/authRoute.js";
 import userRoute from "./routes/userRoute.js";
 import feedRoute from "./routes/feedRoute.js";
 
@@ -35,7 +36,8 @@ app.get("/", (req, res) => {
 });
 
 //Route
-app.use("/api/v1/user", userRoute);
+app.use("/api/v1/auth", authRoute);
+app.use("api/v1/user", authenticateUser, userRoute);
 app.use("/api/v1/feed", authenticateUser, feedRoute);
 
 app.use(notFoundMiddleware);

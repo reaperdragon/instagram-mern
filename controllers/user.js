@@ -1,7 +1,6 @@
 import User from "../model/user.js";
 import { StatusCodes } from "http-status-codes";
 import jwt from "jsonwebtoken";
-import bcrypt from "bcryptjs";
 import cloudinary from "../utils/cloudinaryConfig.js";
 
 import {
@@ -10,78 +9,6 @@ import {
   UnAuthenticatedError,
 } from "../errors/index.js";
 
-const register = async (req, res) => {
-  const { username, fullName, email, password } = req.body;
-
-  if (!email || !password || !username || !fullName) {
-    throw new BadRequestError("Please Provide All Values");
-  }
-
-  const isUserExists = await User.findOne({ email });
-
-  if (isUserExists) {
-    throw new BadRequestError("User Already Exists");
-  }
-
-  const salt = await bcrypt.genSalt(10);
-  const hashedPassword = await bcrypt.hash(password, salt);
-
-  const user = await User.create({
-    username,
-    fullName,
-    email,
-    password: hashedPassword,
-  });
-
-  const token = jwt.sign(
-    {
-      userId: user._id,
-      username: user.username,
-      userEmail: user.email,
-    },
-    process.env.JWT_SECRET,
-    { expiresIn: process.env.JWT_LIFETIME }
-  );
-
-  user.password = undefined;
-
-  res.status(StatusCodes.CREATED).json({ user, token });
-};
-
-const login = async (req, res) => {
-  const { email, password } = req.body;
-
-  if (!email || !password) {
-    throw new BadRequestError("Please Provide All the Values");
-  }
-
-  const user = await User.findOne({ email });
-
-  if (!user) {
-    throw new NotFoundError("Invalid Credentials");
-  }
-
-  const comparePassword = await bcrypt.compare(password, user.password);
-
-  if (!comparePassword) {
-    throw new NotFoundError("Invalid Credentials");
-  }
-
-  const token = jwt.sign(
-    {
-      userId: user._id,
-      username: user.username,
-      userEmail: user.email,
-    },
-    process.env.JWT_SECRET,
-    { expiresIn: process.env.JWT_LIFETIME }
-  );
-
-  user.password = undefined;
-
-  res.status(StatusCodes.OK).json({ user, token });
-};
-
 const updateUser = async (req, res) => {
   const { email, username, bio, fullName, avatar } = req.body;
 
@@ -89,10 +16,10 @@ const updateUser = async (req, res) => {
     throw new BadRequestError("Please Provide all Values");
   }
 
-   const mediaRes = await cloudinary.v2.uploader.upload(avatar, {
-     folder: "instagram-app/user-profiles",
-     use_filename: true,
-   });
+  const mediaRes = await cloudinary.v2.uploader.upload(avatar, {
+    folder: "instagram-app/user-profiles",
+    use_filename: true,
+  });
 
   const user = await User.findByIdAndUpdate(
     { _id: req.user.userId },
@@ -123,4 +50,4 @@ const updateUser = async (req, res) => {
   res.status(StatusCodes.OK).json({ user, token });
 };
 
-export { register, login, updateUser };
+export { updateUser };
