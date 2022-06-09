@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
 const feedSchema = new mongoose.Schema({
-  createdBy: {
+  postedBy: {
     type: mongoose.Types.ObjectId,
     ref: "User",
     required: [true, "Please Provide User."],
@@ -10,17 +10,13 @@ const feedSchema = new mongoose.Schema({
     type: Date,
     default: Date.now(),
   },
-  image: {
+  post: {
     type: String,
     required: [true, "Please Provide Image for Feed"],
   },
   caption: {
     type: String,
     required: [true, "Please Provide Desc For Feed"],
-  },
-  postedBy: {
-    type: mongoose.Types.ObjectId,
-    ref: "User",
   },
   likes: {
     type: [String],
@@ -29,7 +25,7 @@ const feedSchema = new mongoose.Schema({
   comments: [
     {
       comment: String,
-      postedBy: {
+      commentedBy: {
         type: mongoose.Types.ObjectId,
         ref: "User",
         commentTime: { type: Date, default: Date.now() },

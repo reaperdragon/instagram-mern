@@ -2,6 +2,7 @@ import User from "../model/user.js";
 import { StatusCodes } from "http-status-codes";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
+import cloudinary from "../utils/cloudinaryConfig.js";
 
 import {
   BadRequestError,
@@ -88,6 +89,11 @@ const updateUser = async (req, res) => {
     throw new BadRequestError("Please Provide all Values");
   }
 
+   const mediaRes = await cloudinary.v2.uploader.upload(avatar, {
+     folder: "instagram-app/user-profiles",
+     use_filename: true,
+   });
+
   const user = await User.findByIdAndUpdate(
     { _id: req.user.userId },
     {
@@ -95,7 +101,7 @@ const updateUser = async (req, res) => {
       username: username,
       fullName: fullName,
       bio: bio,
-      avatar: avatar,
+      avatar: mediaRes.secure_url,
     },
     {
       new: true,
