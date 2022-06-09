@@ -50,4 +50,73 @@ const updateUser = async (req, res) => {
   res.status(StatusCodes.OK).json({ user, token });
 };
 
-export { updateUser };
+const followUser = async (req, res) => {
+  const { userId } = req.body;
+  const currentId = req.user.userId;
+
+  //follower
+  await User.findByIdAndUpdate(
+    userId,
+    {
+      $push: { followers: currentId },
+    },
+    {
+      new: true,
+    }
+  );
+
+  //following
+  await User.findByIdAndUpdate(
+    currentId,
+    {
+      $push: { following: userId },
+    },
+    { new: true }
+  );
+
+  res.status(StatusCodes.OK).json("Following");
+};
+
+const unFollowUser = async (req, res) => {
+  const { userId } = req.body;
+  const currentId = req.user.userId;
+
+  //unFollow
+  await User.findByIdAndUpdate(
+    userId,
+    {
+      $pull: { followers: currentId },
+    },
+    {
+      new: true,
+    }
+  );
+
+  //unFollowing
+  await User.findByIdAndUpdate(
+    currentId,
+    {
+      $pull: { following: userId },
+    },
+    { new: true }
+  );
+
+  res.status(StatusCodes.OK).json("UnFollowing");
+};
+
+const userProfile = async (req, res) => {
+  const isUserExists = await User.findOne({ _id: req.user.userId })
+    .populate("followers", "_id username fullName email avatar bio")
+    .populate("following", "_id username fullName email avatar bio");
+
+  isUserExists.password = undefined;
+
+  let totalFollowers = isUserExists.followers.length;
+  let totalFollowings = isUserExists.following.length;
+
+  res
+    .status(StatusCodes.OK)
+    .json({ isUserExists, totalFollowers, totalFollowings });
+};
+
+export { updateUser, followUser, unFollowUser, userProfile };

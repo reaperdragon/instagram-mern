@@ -37,7 +37,7 @@ app.get("/", (req, res) => {
 
 //Route
 app.use("/api/v1/auth", authRoute);
-app.use("api/v1/user", authenticateUser, userRoute);
+app.use("/api/v1/user", authenticateUser, userRoute);
 app.use("/api/v1/feed", authenticateUser, feedRoute);
 
 app.use(notFoundMiddleware);
