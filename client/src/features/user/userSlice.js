@@ -10,7 +10,7 @@ export const registerUser = createAsyncThunk(
   "user/registerUser",
   async (user, thunkAPI) => {
     try {
-      const resp = await axios.post("/api/v1/user/register", user);
+      const resp = await axios.post("/api/v1/auth/register", user);
 
       return resp.data;
     } catch (error) {
@@ -23,7 +23,7 @@ export const loginUser = createAsyncThunk(
   "user/loginUser",
   async (user, thunkAPI) => {
     try {
-      const resp = await axios.post("api/v1/user/login", user);
+      const resp = await axios.post("api/v1/auth/login", user);
 
       return resp.data;
     } catch (error) {
