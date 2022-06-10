@@ -18,10 +18,12 @@ const feedSchema = new mongoose.Schema({
     type: String,
     required: [true, "Please Provide Desc For Feed"],
   },
-  likes: {
-    type: [String],
-    default: [],
-  },
+  likes: [
+    {
+      type: mongoose.Types.ObjectId,
+      ref: "User",
+    },
+  ],
   comments: [
     {
       comment: String,

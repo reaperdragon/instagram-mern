@@ -66,11 +66,29 @@ const deleteFeed = async (req, res) => {
 };
 
 const likeFeed = async (req, res) => {
-  try {
-    res.send("Like Feed!");
-  } catch (error) {
-    res.send(error);
+  const { id: feedId } = req.params;
+
+  let feed = await Feed.findById({ _id: feedId });
+
+  if (feed.likes.includes(req.user.userId)) {
+    feed = await Feed.findByIdAndUpdate(
+      { _id: feedId },
+      {
+        $pull: { likes: req.user.userId },
+      },
+      { new: true }
+    );
+  } else {
+    feed = await Feed.findByIdAndUpdate(
+      { _id: feedId },
+      {
+        $push: { likes: req.user.userId },
+      },
+      { new: true }
+    );
   }
+
+  res.status(StatusCodes.OK).json({ feed });
 };
 
 export { getAllFeeds, getFeed, createFeed, deleteFeed, likeFeed };
