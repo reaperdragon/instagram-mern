@@ -1,4 +1,5 @@
 import User from "../model/user.js";
+import Feed from "../model/feed.js";
 import { StatusCodes } from "http-status-codes";
 import jwt from "jsonwebtoken";
 import cloudinary from "../utils/cloudinaryConfig.js";
@@ -54,7 +55,7 @@ const followUser = async (req, res) => {
   const { userId } = req.body;
   const currentId = req.user.userId;
 
-  //follower
+  //add in follower
   await User.findByIdAndUpdate(
     userId,
     {
@@ -65,7 +66,7 @@ const followUser = async (req, res) => {
     }
   );
 
-  //following
+  //add in following
   await User.findByIdAndUpdate(
     currentId,
     {
@@ -81,7 +82,7 @@ const unFollowUser = async (req, res) => {
   const { userId } = req.body;
   const currentId = req.user.userId;
 
-  //unFollow
+  //remove from followers
   await User.findByIdAndUpdate(
     userId,
     {
@@ -92,7 +93,7 @@ const unFollowUser = async (req, res) => {
     }
   );
 
-  //unFollowing
+  //remove from follwoing
   await User.findByIdAndUpdate(
     currentId,
     {
@@ -105,18 +106,34 @@ const unFollowUser = async (req, res) => {
 };
 
 const userProfile = async (req, res) => {
-  const isUserExists = await User.findOne({ _id: req.user.userId })
+  const user = await User.findOne({ _id: req.user.userId })
     .populate("followers", "_id username fullName email avatar bio")
     .populate("following", "_id username fullName email avatar bio");
 
-  isUserExists.password = undefined;
+  const feed = await Feed.find({ postedBy: req.user.userId })
+    .sort("-createdAt")
+    .populate("postedBy", "_id username fullName email avatar bio")
+    .populate("comments.commentedBy", "_id username fullName email avatar bio");
 
-  let totalFollowers = isUserExists.followers.length;
-  let totalFollowings = isUserExists.following.length;
+  //feed count
+  feed.map((data, index) => {
+    return { ...data._doc };
+  });
 
-  res
-    .status(StatusCodes.OK)
-    .json({ isUserExists, totalFollowers, totalFollowings });
+  user.password = undefined;
+
+  let totalFollowers = user.followers.length;
+  let totalFollowings = user.following.length;
+
+  let totalPosts = feed.length;
+
+  res.status(StatusCodes.OK).json({
+    user,
+    totalFollowers,
+    totalFollowings,
+    totalPosts,
+    feed,
+  });
 };
 
 export { updateUser, followUser, unFollowUser, userProfile };
