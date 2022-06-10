@@ -136,4 +136,11 @@ const userProfile = async (req, res) => {
   });
 };
 
-export { updateUser, followUser, unFollowUser, userProfile };
+const searchUser = async (req, res) => {
+  const { search } = req.query;
+
+  const user = await User.find({ username: { $regex: search, $options: "i" } });
+  res.status(StatusCodes.OK).json({ user });
+};
+
+export { updateUser, followUser, unFollowUser, userProfile, searchUser };
