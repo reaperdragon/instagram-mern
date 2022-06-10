@@ -91,4 +91,36 @@ const likeFeed = async (req, res) => {
   res.status(StatusCodes.OK).json({ feed });
 };
 
-export { getAllFeeds, getFeed, createFeed, deleteFeed, likeFeed };
+const getAllFollowingFeeds = async (req, res) => {
+  let followingFeeds = await Feed.find({
+    postedBy: { $in: req.user.userFollowing },
+  })
+    .sort({ createdAt: -1 })
+    .populate("postedBy", "_id username fullName email avatar bio")
+    .populate("comments.commentedBy", "_id username fullName email avatar bio");
+
+  followingFeeds = followingFeeds.map((data, index) => {
+    return { ...data._doc, liked: data.likes.includes(req.user.userId) };
+  });
+
+  res.status(StatusCodes.OK).json({ followingFeeds });
+};
+
+const currentUserFeeds = async (req, res) => {
+  const feeds = await Feed.find({ postedBy: req.user.userId })
+    .sort({ createdAt: -1 })
+    .populate("postedBy", "_id username fullName email avatar bio")
+    .populate("comments.commentedBy", "_id username fullName email avatar bio");
+
+  res.status(StatusCodes.OK).json({ feeds });
+};
+
+export {
+  getAllFeeds,
+  getFeed,
+  createFeed,
+  deleteFeed,
+  likeFeed,
+  getAllFollowingFeeds,
+  currentUserFeeds,
+};

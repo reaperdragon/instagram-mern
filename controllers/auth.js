@@ -37,6 +37,7 @@ const register = async (req, res) => {
       userId: user._id,
       username: user.username,
       userEmail: user.email,
+      userFollowing: user.following,
     },
     process.env.JWT_SECRET,
     { expiresIn: process.env.JWT_LIFETIME }
@@ -71,6 +72,7 @@ const login = async (req, res) => {
       userId: user._id,
       username: user.username,
       userEmail: user.email,
+      userFollowing:user.following
     },
     process.env.JWT_SECRET,
     { expiresIn: process.env.JWT_LIFETIME }
