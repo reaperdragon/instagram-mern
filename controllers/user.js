@@ -111,7 +111,7 @@ const userProfile = async (req, res) => {
     .populate("following", "_id username fullName email avatar bio");
 
   const feed = await Feed.find({ postedBy: req.user.userId })
-    .sort("-createdAt")
+    .sort({ createdAt: -1 })
     .populate("postedBy", "_id username fullName email avatar bio")
     .populate("comments.commentedBy", "_id username fullName email avatar bio");
 
