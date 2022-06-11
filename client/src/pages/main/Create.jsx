@@ -86,7 +86,7 @@ const Create = () => {
             />
 
             <button type="submit" disabled={isLoading} className="btn-update">
-              Post
+              {isLoading?"Uploading":"Post"}
             </button>
           </form>
         </DetailsWrapper>
