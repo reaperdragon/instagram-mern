@@ -24,7 +24,11 @@ const UserProfile = () => {
     <>
       <ContentWrapper>
         <div className="user_profile">
-          <img src={user?.user?.avatar} className="profile" alt="profile" />
+          <img
+            src={userProfile?.payload?.user?.avatar}
+            className="profile"
+            alt="profile"
+          />
           <div className="content1">
             <div className="users">
               <div className="total">
@@ -43,24 +47,20 @@ const UserProfile = () => {
             <button className="button">Button</button>
           </div>
           <div>
-            <h2>{user?.user?.username }</h2>
-            <h4>{user?.user?.fullName }</h4>
-            <p className="bio">{user?.user?.bio }</p>
+            <h2>{userProfile?.payload?.user?.username}</h2>
+            <h4>{userProfile?.payload?.user?.fullName}</h4>
+            <p className="bio">{userProfile?.payload?.user?.bio}</p>
           </div>
         </div>
 
         <div className="users_posts">
-
-          {
-            userProfile?.payload?.feed?.map((data) => {
-              return (
-                <div key={data?._id}>
-                  <img src={data?.post} alt="post"/>
-                </div>
-              )
-              })
-          }
-
+          {userProfile?.payload?.feed?.map((data) => {
+            return (
+              <div key={data?._id}>
+                <img src={data?.post} alt="post" />
+              </div>
+            );
+          })}
         </div>
       </ContentWrapper>
     </>
