@@ -4,15 +4,18 @@ import { useDispatch, useSelector } from "react-redux";
 import { getUserProfile } from "../../features/user/userSlice";
 
 import styled from 'styled-components'
+import { useParams } from "react-router-dom";
 
 const UserProfile = () => {
   const { user, isLoading, userProfile } = useSelector((state) => state.user);
   const dispatch = useDispatch();
   console.log(user);
 
+  const { id } = useParams();
+
   useEffect(() => {
-    dispatch(getUserProfile(user?.user?._id))
-  }, [dispatch, user?.user?._id]);
+    dispatch(getUserProfile(id))
+  }, [dispatch, id]);
 
   console.log(userProfile.payload);
   

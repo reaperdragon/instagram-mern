@@ -24,11 +24,11 @@ const App = () => {
             </ProtectedRoute>
           }
         >
-          <Route index element={<Home /> } />
-          <Route path='/feed/:id' element={<Feed /> } />
-          <Route path="/search" element={<Search /> } />
-          <Route path='/create' element={<Create /> } />
-          <Route path='/user' element={<UserProfile /> } />
+          <Route index element={<Home />} />
+          <Route path="/feed/:id" element={<Feed />} />
+          <Route path="/search" element={<Search />} />
+          <Route path="/create" element={<Create />} />
+          <Route path="/user/:id" element={<UserProfile />} />
         </Route>
 
         <Route path="landing" element={<Landing />} />

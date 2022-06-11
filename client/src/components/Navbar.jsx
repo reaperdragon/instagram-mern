@@ -19,10 +19,13 @@ const Navbar = () => {
 
         <NavItems>
           <NavItem>
-            <NavLink to="/"  activeStyle={{
-    fontWeight: 'bold',
-    color: '#399ffd'
-  }}>
+            <NavLink
+              to="/"
+              activeStyle={{
+                fontWeight: "bold",
+                color: "#399ffd",
+              }}
+            >
               <Home2 size="32" variant="Outline" />
             </NavLink>
           </NavItem>
@@ -37,7 +40,7 @@ const Navbar = () => {
             </NavLink>
           </NavItem>
           <NavItem>
-            <NavLink to="/user">
+            <NavLink to={`/user/${user.user._id}`}>
               <img className="profile" src={user?.user?.avatar} alt="profile" />
             </NavLink>
           </NavItem>
