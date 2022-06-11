@@ -1,14 +1,11 @@
 import React from "react";
 import { Outlet } from "react-router-dom";
-import { Navbar } from "../../components";
-import { useSelector } from "react-redux";
+import { BottomBar, Navbar } from "../../components";
 
 const SharedLayout = () => {
-  const { user, isLoading } = useSelector((state) => state.user);
-
   return (
     <div>
-      <Navbar user={user} />
+      <Navbar />
       <Outlet />
     </div>
   );
