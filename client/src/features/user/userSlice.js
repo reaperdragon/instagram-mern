@@ -32,10 +32,26 @@ export const loginUser = createAsyncThunk(
   }
 );
 
+export const getUserProfile = createAsyncThunk('user/userProfile', async (id,thunkAPI) => {
+  try {
+    const resp = await axios.get(`/api/v1/user/userProfile/${id}`, {
+      headers: {
+        authorization: `Bearer ${getUserFromLocalStorage().token}`
+      }
+    });
+
+    console.log(resp.data);
+    return resp.data;
+  } catch (error) {
+    return thunkAPI.rejectWithValue(error.response.data.msg);
+  }
+})
+
 const initialState = {
   user: getUserFromLocalStorage(),
   isLoading: false,
   users: [],
+  userProfile:{}
 };
 
 const userSlice = createSlice({
@@ -72,6 +88,20 @@ const userSlice = createSlice({
     },
 
     [loginUser.rejected]: (state, { payload }) => {
+      state.isLoading = false;
+      toast.error(payload);
+    },
+
+    [getUserProfile.pending]: (state) => {
+      state.isLoading = true;
+    },
+
+    [getUserProfile.fulfilled]: (state, { payload }) => {
+      state.isLoading = false;
+      state.userProfile = { ...state.userProfile,payload };
+    },
+
+    [getUserProfile.rejected]: (state, { payload }) => {
       state.isLoading = false;
       toast.error(payload);
     },

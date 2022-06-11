@@ -106,7 +106,8 @@ const unFollowUser = async (req, res) => {
 };
 
 const userProfile = async (req, res) => {
-  const user = await User.findOne({ _id: req.user.userId })
+  const { id: userId } = req.params;
+  const user = await User.findOne({ _id: userId })
     .populate("followers", "_id username fullName email avatar bio")
     .populate("following", "_id username fullName email avatar bio");
 

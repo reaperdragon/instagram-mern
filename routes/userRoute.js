@@ -11,7 +11,7 @@ const router = express.Router();
 
 router.route("/user").patch(updateUser);
 
-router.route("/userProfile").get(userProfile);
+router.route("/userProfile/:id").get(userProfile);
 
 router.route("/followUser").patch(followUser);
 
