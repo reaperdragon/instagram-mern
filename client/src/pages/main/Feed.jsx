@@ -9,11 +9,11 @@ import { Link } from "react-router-dom";
 
 import { More, Heart, Message, Save2 } from "iconsax-react";
 
-import {
-  feedLikeDislike,
-} from "../../features/feed/feedSlice.js";
+import { feedLikeDislike } from "../../features/feed/feedSlice.js";
 
 import moment from "moment";
+
+import { SpinnerCircularSplit } from "spinners-react";
 
 const Feed = () => {
   const { id } = useParams();
@@ -77,6 +77,20 @@ const Feed = () => {
     );
   };
 
+  if (isLoading) {
+    return (
+      <Loader>
+        <SpinnerCircularSplit
+          size={50}
+          thickness={100}
+          speed={100}
+          color="rgba(57, 159, 253, 1)"
+          secondaryColor="rgba(57, 159, 253, 0.5)"
+        />
+      </Loader>
+    );
+  }
+
   return (
     <Wrapper>
       <ContentWrapper>
@@ -133,6 +147,14 @@ const Feed = () => {
 };
 
 export default Feed;
+
+const Loader = styled.div`
+  height: 800px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
 
 const Wrapper = styled.div``;
 
