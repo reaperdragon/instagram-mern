@@ -3,6 +3,10 @@ import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 
+import moment from "moment";
+
+import { SpinnerCircularSplit } from "spinners-react";
+
 import { followUserFeeds } from "../../features/feed/feedSlice.js";
 import { Link } from "react-router-dom";
 
@@ -18,6 +22,20 @@ const Home = () => {
   }, [dispatch]);
 
   console.log(followingUserFeeds[0]?.followingFeeds);
+
+  if (isLoading) {
+    return (
+      <Loader>
+        <SpinnerCircularSplit
+          size={50}
+          thickness={100}
+          speed={100}
+          color="rgba(57, 159, 253, 1)"
+          secondaryColor="rgba(57, 159, 253, 0.5)"
+        />
+      </Loader>
+    );
+  }
 
   return (
     <Wrapper>
@@ -41,21 +59,49 @@ const Home = () => {
                 <More size="24" color="#697689" className="more-icon" />
               </div>
             </div>
-            <img
-              src={data?.post}
-              alt="profile-post"
-              className="profile_container-post"
-            />
+            <Link
+              to={`/feed/${data?._id}`}
+              className="profile_container-post-link"
+            >
+              <img
+                src={data?.post}
+                alt="profile-post"
+                className="profile_container-post"
+              />
+            </Link>
             <div className="profile_container-footer">
               <div className="profile_container-footer--icons">
                 <div className="profile_container-footer-icon">
-                  <Heart size="32" color="#697689" />
+                  {data?.liked ? (
+                    <>
+                      <Heart
+                        size="32"
+                        color="#f47373"
+                        variant="Bold"
+                        onClick={() => {
+                          console.log("Like and Unlike");
+                        }}
+                      />
+                    </>
+                  ) : (
+                    <>
+                      <Heart
+                        size="32"
+                        color="#697689"
+                        onClick={() => {
+                          console.log("Like and Unlike");
+                        }}
+                      />
+                    </>
+                  )}
+
                   <Message size="32" color="#697689" />
                 </div>
                 <Save2 size="32" color="#697689" />
               </div>
-              <div className="profile_container-footer-like-count">
+              <div className="profile_container-footer-like-count--time">
                 <p>Like {data?.likes?.length}</p>
+                <p>{moment(data?.createdAt).fromNow()}</p>
               </div>
               <div className="profile_container-footer-caption">
                 <p className="profile_container-footer-caption--caption-text">
@@ -74,6 +120,14 @@ const Home = () => {
 };
 
 export default Home;
+
+const Loader = styled.div`
+  height: 800px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
 
 const Wrapper = styled.div``;
 
@@ -127,6 +181,10 @@ const ContentWrapper = styled.div`
     }
   }
 
+  .profile_container-post-link {
+    width: 100%;
+  }
+
   .profile_container-post {
     width: 100%;
   }
@@ -162,7 +220,9 @@ const ContentWrapper = styled.div`
     cursor: pointer;
   }
 
-  .profile_container-footer-like-count {
+  .profile_container-footer-like-count--time {
+    font-family: "Poppins", sans-serif;
+
     padding: 10px;
   }
 
