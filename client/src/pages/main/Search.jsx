@@ -1,9 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import { FormRow } from "../../components";
-import Photo from "../../assets/img/instagram logo.svg";
 import { Link } from "react-router-dom";
-import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { searchUser } from "../../features/user/userSlice";
 
@@ -38,7 +35,7 @@ const Search = () => {
   return (
     <Wrapper>
       <ContentWrapper>
-        <div className="input-field">
+        <div className="input_field">
           <input
             type="text"
             placeholder="search here..."
@@ -47,7 +44,9 @@ const Search = () => {
             onChange={(e) => setValue(e.target.value)}
           />
 
-          <button onClick={handleSubmit}>Search</button>
+          <button className="search_button" onClick={handleSubmit}>
+            Search
+          </button>
         </div>
 
         {!value ? (
@@ -69,7 +68,7 @@ const Search = () => {
           </div>
         )}
 
-        <div class="container"></div>
+        <div className="container"></div>
       </ContentWrapper>
     </Wrapper>
   );
@@ -115,6 +114,21 @@ const ContentWrapper = styled.div`
 
   input::placeholder {
     font-family: "Poppins", sans-serif;
+  }
+
+  .search_button {
+    background: #0691f5;
+    border: none;
+    padding: 15px 15px;
+    border-radius: 5px;
+    color: white;
+    margin-left: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+
+    &:hover {
+      box-shadow: 0px 4px 4px rgba(14, 121, 255, 0.4);
+    }
   }
 
   .users {
