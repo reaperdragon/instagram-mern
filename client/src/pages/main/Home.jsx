@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 
 import { followUserFeeds } from "../../features/feed/feedSlice.js";
+import { Link } from "react-router-dom";
 
 import { More, Heart, Message, Save2 } from "iconsax-react";
 
@@ -25,14 +26,16 @@ const Home = () => {
           <div className="profile_container" key={data?._id}>
             <div className="profile_container-header">
               <div className="profile_container-header--user">
-                <img
-                  src={data?.postedBy?.avatar}
-                  alt="profile"
-                  className="profile_container-header--user-avatar"
-                />
-                <p className="profile_container-header--user-username">
-                  {data?.postedBy?.username}
-                </p>
+                <Link to={`/user/${data?.postedBy?._id}`}>
+                  <img
+                    src={data?.postedBy?.avatar}
+                    alt="profile"
+                    className="profile_container-header--user-avatar"
+                  />
+                  <p className="profile_container-header--user-username">
+                    {data?.postedBy?.username}
+                  </p>
+                </Link>
               </div>
               <div className="profile_container-header--more">
                 <More size="24" color="#697689" className="more-icon" />
@@ -87,10 +90,18 @@ const ContentWrapper = styled.div`
     height: max-content;
     display: flex;
     align-items: center;
+    justify-content: center;
     border: 1px solid #929292;
     background: #f0f0f0;
     flex-direction: column;
-    margin: 20px;
+    margin: 20px 0;
+    overflow-x: hidden;
+
+    @media only screen and (max-width: 628px) {
+      max-width: 96vw;
+      margin: 10px 0;
+      justify-content: center;
+    }
   }
 
   .profile_container-header {
@@ -107,6 +118,13 @@ const ContentWrapper = styled.div`
     align-items: center;
     padding-left: 10px;
     gap: 10px;
+
+    a {
+      color: black;
+      text-decoration: none;
+      display: flex;
+      gap: 10px;
+    }
   }
 
   .profile_container-post {
@@ -141,6 +159,7 @@ const ContentWrapper = styled.div`
   .profile_container-footer-icon {
     display: flex;
     gap: 10px;
+    cursor: pointer;
   }
 
   .profile_container-footer-like-count {
@@ -157,7 +176,7 @@ const ContentWrapper = styled.div`
     font-weight: 500;
     font-size: 15px;
     line-height: 38px;
-    color:black ;
+    color: black;
   }
 
   .profile_container-footer-caption--caption-text {
@@ -167,5 +186,6 @@ const ContentWrapper = styled.div`
 
   .more-icon {
     transform: rotate(270deg);
+    cursor: pointer;
   }
 `;
