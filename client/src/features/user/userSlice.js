@@ -42,7 +42,6 @@ export const getUserProfile = createAsyncThunk(
         },
       });
 
-      console.log(resp.data);
       return resp.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.response.data.msg);
@@ -53,7 +52,6 @@ export const getUserProfile = createAsyncThunk(
 export const searchUser = createAsyncThunk(
   "user/searchUser",
   async (username, thunkAPI) => {
-    console.log(username);
     try {
       const resp = await axios.get(
         `/api/v1/user/search/user?search=${username}`,
@@ -64,7 +62,6 @@ export const searchUser = createAsyncThunk(
         }
       );
 
-      console.log(resp.data);
       return resp.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.response.data.msg);
@@ -123,7 +120,7 @@ const userSlice = createSlice({
 
     [getUserProfile.fulfilled]: (state, { payload }) => {
       state.isLoading = false;
-      state.userProfile = { ...state.userProfile,payload }; 
+      state.userProfile = { ...state.userProfile, payload };
     },
 
     [getUserProfile.rejected]: (state, { payload }) => {

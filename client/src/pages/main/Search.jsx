@@ -6,6 +6,9 @@ import { Link } from "react-router-dom";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { searchUser } from "../../features/user/userSlice";
+
+import { SpinnerCircularSplit } from "spinners-react";
+
 const Search = () => {
   const [value, setValue] = useState("");
 
@@ -13,56 +16,74 @@ const Search = () => {
 
   const dispatch = useDispatch();
 
-  console.log(users);
-
   const handleSubmit = (e) => {
     e.preventDefault();
     dispatch(searchUser(value));
   };
 
+  if (isLoading) {
+    return (
+      <Loader>
+        <SpinnerCircularSplit
+          size={50}
+          thickness={100}
+          speed={100}
+          color="rgba(57, 159, 253, 1)"
+          secondaryColor="rgba(57, 159, 253, 0.5)"
+        />
+      </Loader>
+    );
+  }
+
   return (
-    <>
-      <Wrapper>
-        <ContentWrapper>
-          <div className="input-field">
-            <input
-              type="text"
-              placeholder="search here..."
-              name="username"
-              value={value}
-              onChange={(e) => setValue(e.target.value)}
-            />
+    <Wrapper>
+      <ContentWrapper>
+        <div className="input-field">
+          <input
+            type="text"
+            placeholder="search here..."
+            name="username"
+            value={value}
+            onChange={(e) => setValue(e.target.value)}
+          />
 
-            <button onClick={handleSubmit}>Search</button>
+          <button onClick={handleSubmit}>Search</button>
+        </div>
+
+        {!value ? (
+          <p>Search User</p>
+        ) : (
+          <div className="users">
+            {users?.user?.map((data, index) => (
+              <div className="user_container" key={data._id}>
+                <Link to={`/user/${data._id}`}>
+                  <img
+                    src={data?.avatar}
+                    alt="logo"
+                    className="user_container-profile"
+                  />
+                  <h4 className="user_container-username">{data.username}</h4>
+                </Link>
+              </div>
+            ))}
           </div>
+        )}
 
-          {!value ? (
-            <div>Search User</div>
-          ) : (
-            <div className="users">
-              {users?.user?.map((data, index) => (
-                <div className="user_container" key={data._id}>
-                  <Link to={`/user/${data._id}`}>
-                    <img
-                      src={data?.avatar}
-                      alt="logo"
-                      className="user_container-profile"
-                    />
-                    <h4 className="user_container-username">{data.username}</h4>
-                  </Link>
-                </div>
-              ))}
-            </div>
-          )}
-
-          <div class="container"></div>
-        </ContentWrapper>
-      </Wrapper>
-    </>
+        <div class="container"></div>
+      </ContentWrapper>
+    </Wrapper>
   );
 };
 
 export default Search;
+
+const Loader = styled.div`
+  height: 800px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
 
 const Wrapper = styled.div``;
 const ContentWrapper = styled.div`
@@ -83,6 +104,7 @@ const ContentWrapper = styled.div`
     margin: 10px 0;
     outline: none;
     transition: all 0.3s ease-in-out;
+    font-family: "Poppins", sans-serif;
   }
 
   input:focus {
