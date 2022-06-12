@@ -7,8 +7,6 @@ import {
   removeUserFromLocalStorage,
 } from "../../utils/localStorage";
 
-
-
 axios.interceptors.request.use((config) => {
   const user = getUserFromLocalStorage();
   if (user) {
@@ -57,9 +55,25 @@ export const followUserFeeds = createAsyncThunk(
 export const feedLikeDislike = createAsyncThunk(
   "feed/feedLikeDislike",
   async ({ postId }, thunkAPI) => {
-    console.log(postId);
     try {
       const resp = axios.patch(`/api/v1/feed/like/${postId}`);
+      return resp.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.response.data.msg);
+    }
+  }
+);
+
+export const getFeed = createAsyncThunk(
+  "feed/getFeed",
+  async (id, thunkAPI) => {
+    console.log(id);
+    try {
+      const resp = await axios.get(`/api/v1/feed/${id}`, {
+        headers: {
+          authorization: `Bearer ${getUserFromLocalStorage().token}`,
+        },
+      });
       console.log(resp.data);
       return resp.data;
     } catch (error) {
@@ -109,10 +123,21 @@ export const feedSlice = createSlice({
     },
     [feedLikeDislike.fulfilled]: (state, { payload }) => {
       state.isLoading = false;
-      state.followingUserFeeds = [...state.followingUserFeeds,payload]
-      toast.success("You Liked Post!");
+      state.followingUserFeeds = [...state.followingUserFeeds, payload];
     },
     [feedLikeDislike.rejected]: (state, { payload }) => {
+      state.isLoading = false;
+      toast.error(payload);
+    },
+
+    [getFeed.pending]: (state) => {
+      state.isLoading = true;
+    },
+    [getFeed.fulfilled]: (state, { payload }) => {
+      state.isLoading = false;
+      state.feed = { ...state.feed, payload };
+    },
+    [getFeed.rejected]: (state, { payload }) => {
       state.isLoading = false;
       toast.error(payload);
     },
