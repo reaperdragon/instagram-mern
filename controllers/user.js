@@ -106,12 +106,12 @@ const unFollowUser = async (req, res) => {
 };
 
 const userProfile = async (req, res) => {
-  const { id: userId } = req.params;
-  const user = await User.findOne({ _id: userId })
+  const { id: user_id } = req.params;
+  let user = await User.findOne({ _id: user_id })
     .populate("followers", "_id username fullName email avatar bio")
     .populate("following", "_id username fullName email avatar bio");
 
-  const feed = await Feed.find({ postedBy: req.user.userId })
+  let feed = await Feed.find({ postedBy: user_id })
     .sort({ createdAt: -1 })
     .populate("postedBy", "_id username fullName email avatar bio")
     .populate("comments.commentedBy", "_id username fullName email avatar bio");
