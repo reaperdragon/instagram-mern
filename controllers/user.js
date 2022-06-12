@@ -118,7 +118,7 @@ const userProfile = async (req, res) => {
 
   //feed count
   feed.map((data, index) => {
-    return { ...data._doc };
+    return { ...data._doc,liked:data.likes.includes(user_id) };
   });
 
   user.password = undefined;

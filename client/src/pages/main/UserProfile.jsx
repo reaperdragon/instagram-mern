@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { SpinnerCircularSplit } from "spinners-react";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -8,30 +8,29 @@ import styled from "styled-components";
 import { useParams } from "react-router-dom";
 
 const UserProfile = () => {
-  const { user, isLoading, userProfile } = useSelector((state) => state.user);
-  const dispatch = useDispatch();
-  console.log(user);
-
   const { id } = useParams();
+
+  const dispatch = useDispatch();
 
   useEffect(() => {
     dispatch(getUserProfile(id));
   }, [dispatch, id]);
 
-    if (isLoading) {
-      return (
-        <Loader>
-          <SpinnerCircularSplit
-            size={50}
-            thickness={100}
-            speed={100}
-            color="rgba(57, 159, 253, 1)"
-            secondaryColor="rgba(57, 159, 253, 0.5)"
-          />
-        </Loader>
-      );
-    }
+  const { user, isLoading, userProfile } = useSelector((state) => state.user);
 
+  if (isLoading) {
+    return (
+      <Loader>
+        <SpinnerCircularSplit
+          size={50}
+          thickness={100}
+          speed={100}
+          color="rgba(57, 159, 253, 1)"
+          secondaryColor="rgba(57, 159, 253, 0.5)"
+        />
+      </Loader>
+    );
+  }
 
   return (
     <>
@@ -86,13 +85,13 @@ const UserProfile = () => {
 
 export default UserProfile;
 
-  const Loader = styled.div`
-    height: 800px;
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  `;
+const Loader = styled.div`
+  height: 800px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
 
 const ContentWrapper = styled.div`
   max-width: 1234px;
@@ -183,9 +182,9 @@ const ContentWrapper = styled.div`
     grid-template-columns: repeat(3, 1fr);
     grid-gap: 20px;
 
-    img{
-      width:100% ;
-      height:350px ;
+    img {
+      width: 100%;
+      height: 350px;
     }
   }
 `;

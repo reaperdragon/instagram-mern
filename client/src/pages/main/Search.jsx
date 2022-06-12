@@ -1,51 +1,59 @@
 import React, { useState } from "react";
-import styled from 'styled-components'
+import styled from "styled-components";
 import { FormRow } from "../../components";
-import Photo from '../../assets/img/instagram logo.svg'
- const Search = () => {
-  const [value, setValue] = useState({username:""});
+import Photo from "../../assets/img/instagram logo.svg";
+import { Link } from "react-router-dom";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { searchUser } from "../../features/user/userSlice";
+const Search = () => {
+  const [value, setValue] = useState("");
 
-    const handleChange = (e) => {
-      setValue({ ...value, [e.target.name]: e.target.value });
+  const { users, isLoading } = useSelector((state) => state.user);
+
+  const dispatch = useDispatch();
+
+  console.log(users);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    dispatch(searchUser(value));
   };
-  
-  const users = [
-    {
-      username: "Michael",
-      photo: Photo,
-    },
-    {
-      username: "John",
-      photo: Photo,
-    },
-  ];
 
   return (
     <>
       <Wrapper>
         <ContentWrapper>
           <div className="input-field">
-            <FormRow
+            <input
               type="text"
               placeholder="search here..."
               name="username"
-              value={value.username}
-              handleChange={handleChange}
+              value={value}
+              onChange={(e) => setValue(e.target.value)}
             />
+
+            <button onClick={handleSubmit}>Search</button>
           </div>
 
-          <div className="users">
-            {users.map((data, index) => (
-              <div className="user_container">
-                <img
-                  src={data?.photo}
-                  alt="logo"
-                  className="user_container-profile"
-                />
-                <h4 className="user_container-username">{data.username}</h4>
-              </div>
-            ))}
-          </div>
+          {!value ? (
+            <div>Search User</div>
+          ) : (
+            <div className="users">
+              {users?.user?.map((data, index) => (
+                <div className="user_container" key={data._id}>
+                  <Link to={`/user/${data._id}`}>
+                    <img
+                      src={data?.avatar}
+                      alt="logo"
+                      className="user_container-profile"
+                    />
+                    <h4 className="user_container-username">{data.username}</h4>
+                  </Link>
+                </div>
+              ))}
+            </div>
+          )}
 
           <div class="container"></div>
         </ContentWrapper>
@@ -56,9 +64,7 @@ import Photo from '../../assets/img/instagram logo.svg'
 
 export default Search;
 
-const Wrapper = styled.div` 
-
-`
+const Wrapper = styled.div``;
 const ContentWrapper = styled.div`
   max-width: 1234px;
   margin: 0 auto;
@@ -100,6 +106,7 @@ const ContentWrapper = styled.div`
 
   .user_container {
     display: flex;
+
     align-items: center;
     justify-content: left;
     gap: 10px;
@@ -111,7 +118,7 @@ const ContentWrapper = styled.div`
     padding-top: 10px;
     padding-bottom: 10px;
     border-radius: 5px;
-    transition:all 0.3s ease-in-out;
+    transition: all 0.3s ease-in-out;
     cursor: pointer;
 
     &:hover {
@@ -119,9 +126,18 @@ const ContentWrapper = styled.div`
     }
   }
 
+  a {
+    display: flex;
+    align-items: center;
+    justify-content: left;
+    gap: 10px;
+    text-decoration: none;
+  }
+
   .user_container-profile {
     width: 42px;
     height: 42px;
+    border-radius: 50%;
   }
 
   .user_container-username {

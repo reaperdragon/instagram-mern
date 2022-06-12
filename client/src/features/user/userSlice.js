@@ -32,26 +32,51 @@ export const loginUser = createAsyncThunk(
   }
 );
 
-export const getUserProfile = createAsyncThunk('user/userProfile', async (id,thunkAPI) => {
-  try {
-    const resp = await axios.get(`/api/v1/user/userProfile/${id}`, {
-      headers: {
-        authorization: `Bearer ${getUserFromLocalStorage().token}`
-      }
-    });
+export const getUserProfile = createAsyncThunk(
+  "user/userProfile",
+  async (id, thunkAPI) => {
+    try {
+      const resp = await axios.get(`/api/v1/user/userProfile/${id}`, {
+        headers: {
+          authorization: `Bearer ${getUserFromLocalStorage().token}`,
+        },
+      });
 
-    console.log(resp.data);
-    return resp.data;
-  } catch (error) {
-    return thunkAPI.rejectWithValue(error.response.data.msg);
+      console.log(resp.data);
+      return resp.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.response.data.msg);
+    }
   }
-})
+);
+
+export const searchUser = createAsyncThunk(
+  "user/searchUser",
+  async (username, thunkAPI) => {
+    console.log(username);
+    try {
+      const resp = await axios.get(
+        `/api/v1/user/search/user?search=${username}`,
+        {
+          headers: {
+            authorization: `Bearer ${getUserFromLocalStorage().token}`,
+          },
+        }
+      );
+
+      console.log(resp.data);
+      return resp.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.response.data.msg);
+    }
+  }
+);
 
 const initialState = {
   user: getUserFromLocalStorage(),
   isLoading: false,
   users: [],
-  userProfile:{}
+  userProfile: {},
 };
 
 const userSlice = createSlice({
@@ -98,14 +123,30 @@ const userSlice = createSlice({
 
     [getUserProfile.fulfilled]: (state, { payload }) => {
       state.isLoading = false;
-      state.userProfile = { ...state.userProfile,payload };
+      state.userProfile = { ...state.userProfile,payload }; 
     },
 
     [getUserProfile.rejected]: (state, { payload }) => {
       state.isLoading = false;
       toast.error(payload);
     },
+
+    [searchUser.pending]: (state) => {
+      state.isLoading = true;
+    },
+
+    [searchUser.fulfilled]: (state, { payload }) => {
+      state.isLoading = false;
+      state.users = { ...payload };
+    },
+
+    [searchUser.rejected]: (state, { payload }) => {
+      state.isLoading = false;
+      toast.error(payload);
+    },
   },
 });
+
+export const { setFeeds } = userSlice.actions;
 
 export default userSlice.reducer;
