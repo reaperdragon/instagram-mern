@@ -27,10 +27,28 @@ export const createFeed = createAsyncThunk(
   }
 );
 
+export const followUserFeeds = createAsyncThunk(
+  "feed/followUserFeeds",
+  async (_, thunkAPI) => {
+    try {
+      const resp = await axios.get(`api/v1/feed/explore/getFollowing`, {
+        headers: {
+          authorization: `Bearer ${getUserFromLocalStorage().token}`,
+        },
+      });
+      console.log(resp.data);
+      return resp.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.response.data.msg);
+    }
+  }
+);
+
 const initialState = {
   feeds: [],
   feed: {},
   isLoading: false,
+  followingUserFeeds:[],
 };
 
 export const feedSlice = createSlice({
@@ -46,6 +64,18 @@ export const feedSlice = createSlice({
       toast.success("Feed Created SuccessFully📷");
     },
     [createFeed.rejected]: (state, { payload }) => {
+      state.isLoading = false;
+      toast.error(payload);
+    },
+
+    [followUserFeeds.pending]: (state) => {
+      state.isLoading = true;
+    },
+    [followUserFeeds.fulfilled]: (state, { payload }) => {
+      state.isLoading = false;
+      state.followingUserFeeds = [...state.followingUserFeeds, payload];
+    },
+    [followUserFeeds.rejected]: (state, { payload }) => {
       state.isLoading = false;
       toast.error(payload);
     },
