@@ -7,7 +7,10 @@ import moment from "moment";
 
 import { SpinnerCircularSplit } from "spinners-react";
 
-import { followUserFeeds } from "../../features/feed/feedSlice.js";
+import {
+  feedLikeDislike,
+  followUserFeeds,
+} from "../../features/feed/feedSlice.js";
 import { Link } from "react-router-dom";
 
 import { More, Heart, Message, Save2 } from "iconsax-react";
@@ -78,8 +81,9 @@ const Home = () => {
                         size="32"
                         color="#f47373"
                         variant="Bold"
-                        onClick={() => {
-                          console.log("Like and Unlike");
+                        onClick={(e) => {
+                          e.preventDefault();
+                          dispatch(feedLikeDislike({ postId: data?._id }));
                         }}
                       />
                     </>
@@ -88,9 +92,11 @@ const Home = () => {
                       <Heart
                         size="32"
                         color="#697689"
-                        onClick={() => {
-                          console.log("Like and Unlike");
-                        }}
+                        onClick={(e) =>{
+                          e.preventDefault();
+                          dispatch(feedLikeDislike({ postId: data?._id }));
+                        }
+                        }
                       />
                     </>
                   )}

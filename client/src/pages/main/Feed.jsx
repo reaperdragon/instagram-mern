@@ -1,9 +1,19 @@
-import React from 'react'
+import React from "react";
+import { useParams } from "react-router-dom";
+import styled from "styled-components";
 
 const Feed = () => {
-  return (
-    <div>Feed</div>
-  )
-}
+  const { id } = useParams();
 
-export default Feed
+  return (
+    <Wrapper>
+      <ContentWrapper></ContentWrapper>
+    </Wrapper>
+  );
+};
+
+export default Feed;
+
+const Wrapper = styled.div``;
+
+const ContentWrapper = styled.div``;
