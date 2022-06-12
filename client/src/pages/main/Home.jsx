@@ -24,8 +24,6 @@ const Home = () => {
     dispatch(followUserFeeds());
   }, [dispatch]);
 
-  console.log(followingUserFeeds[0]?.followingFeeds);
-
   if (isLoading) {
     return (
       <Loader>
@@ -81,9 +79,9 @@ const Home = () => {
                         size="32"
                         color="#f47373"
                         variant="Bold"
-                        onClick={(e) => {
-                          e.preventDefault();
+                        onClick={() => {
                           dispatch(feedLikeDislike({ postId: data?._id }));
+                          window.location.reload(false);
                         }}
                       />
                     </>
@@ -92,11 +90,10 @@ const Home = () => {
                       <Heart
                         size="32"
                         color="#697689"
-                        onClick={(e) =>{
-                          e.preventDefault();
+                        onClick={() => {
                           dispatch(feedLikeDislike({ postId: data?._id }));
-                        }
-                        }
+                          window.location.reload(false);
+                        }}
                       />
                     </>
                   )}
