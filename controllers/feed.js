@@ -137,6 +137,17 @@ const commentOnFeed = async (req, res) => {
   res.status(StatusCodes.OK).json(commentFeed);
 };
 
+const getAllComments = async (req, res) => {
+  const { id: postId } = req.params;
+
+  const feedComment = await Feed.findOne({ _id: postId }).populate(
+    "comments.commentedBy",
+    "_id username fullName email avatar bio"
+  );
+
+  res.status(StatusCodes.OK).json(feedComment);
+};
+
 export {
   getAllFeeds,
   getFeed,
@@ -146,4 +157,5 @@ export {
   getAllFollowingFeeds,
   currentUserFeeds,
   commentOnFeed,
+  getAllComments,
 };
