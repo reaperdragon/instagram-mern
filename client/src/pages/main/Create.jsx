@@ -30,9 +30,10 @@ const Create = () => {
 
     if (!caption || !post) {
       toast.error("Please Provide All The Fields");
+      setValues({ caption: "", post: "" });
     } else {
       dispatch(createFeed(values));
-
+      setValues({ caption: "", post: "" });
       return;
     }
   };
@@ -86,7 +87,7 @@ const Create = () => {
             />
 
             <button type="submit" disabled={isLoading} className="btn-update">
-              {isLoading?"Uploading":"Post"}
+              {isLoading ? "Uploading" : "Post"}
             </button>
           </form>
         </DetailsWrapper>
