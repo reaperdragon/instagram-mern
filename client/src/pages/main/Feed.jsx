@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
-import { getFeed } from "../../features/feed/feedSlice";
+import { commentOnFeed, getFeed } from "../../features/feed/feedSlice";
 
 import { Link } from "react-router-dom";
 
@@ -14,8 +14,12 @@ import { feedLikeDislike } from "../../features/feed/feedSlice.js";
 import moment from "moment";
 
 import { SpinnerCircularSplit } from "spinners-react";
+import { useState } from "react";
+
+import { FormRow } from "../../components";
 
 const Feed = () => {
+  const [values, setValues] = useState({ comment: "" });
   const { id } = useParams();
 
   const { feed, isLoading } = useSelector((state) => state.feed);
@@ -32,6 +36,19 @@ const Feed = () => {
 
   console.log(feed);
   console.log(feed?.payload?.feed);
+
+  const handleChange = (e) => {
+    setValues({ ...values, [e.target.name]: e.target.value });
+  };
+
+  const onSubmit = async (e) => {
+    e.preventDefault();
+    const { comment } = values;
+    await dispatch(
+      commentOnFeed({ postId: feed?.payload?.feed?._id, comment: comment })
+    );
+    console.log(comment);
+  };
 
   const Likes = () => {
     if (feed?.payload?.feed?.likes?.length > 0) {
@@ -141,6 +158,21 @@ const Feed = () => {
             </div>
           </div>
         </div>
+
+        <div className="comment_container">
+          <form className="form" onSubmit={onSubmit}>
+            <FormRow
+              type="text"
+              placeholder="comment here"
+              name="comment"
+              value={values.comment}
+              handleChange={handleChange}
+            />
+            <button type="submit" className="comment_container-comment--button">
+              Comment
+            </button>
+          </form>
+        </div>
       </ContentWrapper>
     </Wrapper>
   );
@@ -160,11 +192,16 @@ const Wrapper = styled.div``;
 
 const ContentWrapper = styled.div`
   max-width: 1200px;
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-gap: 10px;
   align-items: center;
   justify-content: center;
   margin: 0 auto;
+
+  @media only screen and (max-width: 628px) {
+    grid-template-columns: 1fr;
+  }
 
   .profile_container {
     width: 700px;
@@ -274,5 +311,60 @@ const ContentWrapper = styled.div`
   .more-icon {
     transform: rotate(270deg);
     cursor: pointer;
+  }
+
+  .form {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: row;
+    padding: 20px 0;
+    background: white;
+    width: 100%;
+    gap: 10px;
+    border-radius: 5px;
+  }
+
+  input {
+    width: 80%;
+    height: 50px;
+    padding-left: 5px;
+    background: #dff3fe;
+    border: none;
+    border-radius: 5px;
+    margin: 10px 0;
+    font-family: "Poppins", sans-serif;
+    outline: none;
+    transition: all 0.3s ease-in-out;
+  }
+  input:focus {
+    color: black;
+    font-weight: 400;
+    font-family: "Poppins", sans-serif;
+  }
+  input::placeholder {
+    font-family: "Poppins", sans-serif;
+  }
+
+  .comment_container-comment--button {
+    background: #9ad0e8;
+    border-radius: 8px;
+    border: none;
+    margin: 10px 0;
+    font-family: "Inter";
+    font-style: normal;
+    font-weight: 400;
+
+    line-height: 36px;
+    padding: 5px 5px;
+    cursor: pointer;
+    color: white;
+    transition: all 0.3s ease-in-out;
+
+    &:hover {
+      transform: translate(0, -5px);
+      background: #0691f5;
+      box-shadow: 0px 4px 4px rgba(36, 130, 217, 0.35);
+    }
   }
 `;

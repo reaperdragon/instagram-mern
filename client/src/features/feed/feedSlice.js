@@ -82,6 +82,20 @@ export const getFeed = createAsyncThunk(
   }
 );
 
+export const commentOnFeed = createAsyncThunk(
+  "feed/commentOnFeed",
+  async ({ postId, comment }, thunkAPI) => {
+    console.log(postId, comment);
+    try {
+      const resp = await axios.patch(`/api/v1/feed/${postId}`, { comment });
+      console.log(resp.data);
+      return resp.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.response.data.msg);
+    }
+  }
+);
+
 const initialState = {
   feeds: [],
   feed: {},
@@ -138,6 +152,18 @@ export const feedSlice = createSlice({
       state.feed = { ...state.feed, payload };
     },
     [getFeed.rejected]: (state, { payload }) => {
+      state.isLoading = false;
+      toast.error(payload);
+    },
+
+    [commentOnFeed.pending]: (state) => {
+      state.isLoading = true;
+    },
+    [commentOnFeed.fulfilled]: (state, { payload }) => {
+      state.isLoading = false;
+      state.feeds = { ...state.feeds, payload };
+    },
+    [commentOnFeed.rejected]: (state, { payload }) => {
       state.isLoading = false;
       toast.error(payload);
     },
