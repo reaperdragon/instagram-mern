@@ -113,6 +113,21 @@ const Home = () => {
                   </span>{" "}
                   {data?.caption}
                 </p>
+
+                {data?.comments?.slice(0, 2).map((comment) => {
+                  console.log(comment);
+                  return (
+                    <p
+                      className="profile_container-footer-caption--comment-text"
+                      key={comment._id}
+                    >
+                      <span className="profile_container-footer-caption--username">
+                        {comment?.commentedBy?.username}
+                      </span>{" "}
+                      {comment?.comment}
+                    </p>
+                  );
+                })}
               </div>
             </div>
           </div>
@@ -244,6 +259,12 @@ const ContentWrapper = styled.div`
 
   .profile_container-footer-caption--caption-text {
     font-family: "Poppins";
+    color: #6f6f6f;
+  }
+
+  .profile_container-footer-caption--comment-text {
+    font-family: "Poppins";
+    font-size: 12px;
     color: #6f6f6f;
   }
 
