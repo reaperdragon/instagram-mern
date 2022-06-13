@@ -10,6 +10,7 @@ import {
   Search,
   Create,
   UserProfile,
+  EditUserProfile,
 } from "./pages/main";
 
 const App = () => {
@@ -29,6 +30,7 @@ const App = () => {
           <Route path="/search" element={<Search />} />
           <Route path="/create" element={<Create />} />
           <Route path="/user/:id" element={<UserProfile />} />
+          <Route path="/editProfile" element={<EditUserProfile />} />
         </Route>
 
         <Route path="landing" element={<Landing />} />

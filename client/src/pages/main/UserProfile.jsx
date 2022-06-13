@@ -1,14 +1,18 @@
-import React, { useState } from "react";
+import React from "react";
 import { SpinnerCircularSplit } from "spinners-react";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getUserProfile } from "../../features/user/userSlice";
 
+import { logoutUser } from "../../features/user/userSlice";
+
 import styled from "styled-components";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 const UserProfile = () => {
   const { id } = useParams();
+
+  const navigate = useNavigate();
 
   const dispatch = useDispatch();
 
@@ -57,7 +61,24 @@ const UserProfile = () => {
               </div>
             </div>
             {userProfile?.payload?.user?._id === user?.user?._id ? (
-              <button className="button">Edit Profile</button>
+              <>
+                {" "}
+                <button
+                  className="button"
+                  onClick={() => {
+                    navigate("/editProfile");
+                  }}
+                >
+                  Edit Profile
+                </button>{" "}
+                <button
+                  className="btn-logout"
+                  disabled={isLoading}
+                  onClick={() => dispatch(logoutUser())}
+                >
+                  Log Out
+                </button>
+              </>
             ) : (
               <button className="button">Follow</button>
             )}
@@ -185,6 +206,28 @@ const ContentWrapper = styled.div`
     img {
       width: 100%;
       height: 350px;
+    }
+  }
+
+  .btn-logout {
+    width: 100%;
+    height: 50px;
+    background: #ff5454;
+    border-radius: 3px;
+    cursor: pointer;
+    border: none;
+    font-family: "Poppins";
+    font-style: normal;
+    font-weight: 400;
+    font-size: 20px;
+    line-height: 45px;
+    margin: 10px 0;
+    transition: all 0.25s ease-in-out;
+    &:hover {
+      background: #fd3939;
+      box-shadow: 0px 10px 20px rgba(253, 57, 57, 0.5);
+      transform: translate(0, -5px);
+      color: white;
     }
   }
 `;

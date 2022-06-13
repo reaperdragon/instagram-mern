@@ -3,6 +3,7 @@ import axios from "axios";
 import {
   addUserToLocalStorage,
   getUserFromLocalStorage,
+  removeUserFromLocalStorage,
 } from "../../utils/localStorage";
 import { toast } from "react-toastify";
 
@@ -69,6 +70,24 @@ export const searchUser = createAsyncThunk(
   }
 );
 
+export const userUpdate = createAsyncThunk(
+  "user/userUpdate",
+  async (user, thunkAPI) => {
+    console.log(user);
+    try {
+      const resp = await axios.patch("api/v1/user/user", user, {
+        headers: {
+          authorization: `Bearer ${getUserFromLocalStorage().token}`,
+        },
+      });
+      console.log(resp.data);
+      return resp.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.response.data.msg);
+    }
+  }
+);
+
 const initialState = {
   user: getUserFromLocalStorage(),
   isLoading: false,
@@ -79,6 +98,15 @@ const initialState = {
 const userSlice = createSlice({
   name: "user",
   initialState,
+  reducers: {
+    logoutUser: (state, { payload }) => {
+      state.user = null;
+      removeUserFromLocalStorage();
+      if (payload) {
+        toast.success(payload);
+      }
+    },
+  },
   extraReducers: {
     [registerUser.pending]: (state) => {
       state.isLoading = true;
@@ -141,9 +169,26 @@ const userSlice = createSlice({
       state.isLoading = false;
       toast.error(payload);
     },
+
+    [userUpdate.pending]: (state) => {
+      state.isLoading = true;
+    },
+
+    [userUpdate.fulfilled]: (state, { payload }) => {
+      const user = payload;
+      state.isLoading = false;
+      state.user = user;
+      addUserToLocalStorage(user);
+      toast.success(`Your Profile Updated! ${user.user.username}`);
+    },
+
+    [userUpdate.rejected]: (state, { payload }) => {
+      state.isLoading = false;
+      toast.error(payload);
+    },
   },
 });
 
-export const { setFeeds } = userSlice.actions;
+export const { setFeeds, logoutUser } = userSlice.actions;
 
 export default userSlice.reducer;
