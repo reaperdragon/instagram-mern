@@ -45,7 +45,17 @@ const register = async (req, res) => {
 
   user.password = undefined;
 
-  res.status(StatusCodes.CREATED).json({ user, token });
+  res.status(StatusCodes.CREATED).json({
+    _id: user._id,
+    avatar: user.avatar,
+    bio: user.bio,
+    email: user.email,
+    fullName: user.fullName,
+    followers: user.followers,
+    following: user.following,
+    username: user.username,
+    token,
+  });
 };
 
 const login = async (req, res) => {
@@ -72,7 +82,7 @@ const login = async (req, res) => {
       userId: user._id,
       username: user.username,
       userEmail: user.email,
-      userFollowing:user.following
+      userFollowing: user.following,
     },
     process.env.JWT_SECRET,
     { expiresIn: process.env.JWT_LIFETIME }
@@ -80,7 +90,19 @@ const login = async (req, res) => {
 
   user.password = undefined;
 
-  res.status(StatusCodes.OK).json({ user, token });
+  res
+    .status(StatusCodes.OK)
+    .json({
+      _id: user._id,
+      avatar: user.avatar,
+      bio: user.bio,
+      email: user.email,
+      fullName:user.fullName,
+      followers: user.followers,
+      following: user.following,
+      username: user.username,
+      token,
+    });
 };
 
 export { register, login };

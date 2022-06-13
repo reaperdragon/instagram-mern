@@ -40,8 +40,8 @@ const Navbar = () => {
             </NavLink>
           </NavItem>
           <NavItem>
-            <NavLink to={`/user/${user.user._id}`}>
-              <img className="profile" src={user?.user?.avatar} alt="profile" />
+            <NavLink to={`/user/${user._id}`}>
+              <img className="profile" src={user?.avatar} alt="profile" />
             </NavLink>
           </NavItem>
         </NavItems>

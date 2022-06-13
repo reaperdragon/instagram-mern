@@ -12,11 +12,17 @@ import PostContainer from "../../components/PostContainer.jsx";
 const Home = () => {
   const { isLoading, followingUserFeeds } = useSelector((state) => state.feed);
 
+  const { user } = useSelector((state) => state.user);
+
+  console.log(user._id)
+
   const dispatch = useDispatch();
+
+  console.log(followingUserFeeds);
 
   useEffect(() => {
     dispatch(followUserFeeds());
-  }, [dispatch]);
+  }, [dispatch,user]);
 
   if (isLoading) {
     return (

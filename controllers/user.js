@@ -48,15 +48,26 @@ const updateUser = async (req, res) => {
 
   user.password = undefined;
 
-  res.status(StatusCodes.OK).json({ user, token });
+  res.status(StatusCodes.OK).json({
+    _id: user._id,
+    avatar: user.avatar,
+    bio: user.bio,
+    email: user.email,
+    fullName: user.fullName,
+    followers: user.followers,
+    following: user.following,
+    username: user.username,
+    token,
+  });
 };
 
 const followUser = async (req, res) => {
   const { userId } = req.body;
   const currentId = req.user.userId;
 
+  let user;
   //add in follower
-  await User.findByIdAndUpdate(
+  user = await User.findByIdAndUpdate(
     userId,
     {
       $push: { followers: currentId },
@@ -67,7 +78,7 @@ const followUser = async (req, res) => {
   );
 
   //add in following
-  await User.findByIdAndUpdate(
+  user = await User.findByIdAndUpdate(
     currentId,
     {
       $push: { following: userId },
@@ -75,15 +86,42 @@ const followUser = async (req, res) => {
     { new: true }
   );
 
-  res.status(StatusCodes.OK).json("Following");
+  const token = jwt.sign(
+    {
+      userId: user._id,
+      username: user.username,
+      userEmail: user.email,
+      userFollowing: user.following,
+    },
+    process.env.JWT_SECRET,
+    { expiresIn: process.env.JWT_LIFETIME }
+  );
+
+  user.password = undefined;
+
+  res
+    .status(StatusCodes.OK)
+    .json({
+      _id: user._id,
+      avatar: user.avatar,
+      bio: user.bio,
+      email: user.email,
+      fullName: user.fullName,
+      followers: user.followers,
+      following: user.following,
+      username: user.username,
+      token,
+    });
 };
 
 const unFollowUser = async (req, res) => {
   const { userId } = req.body;
   const currentId = req.user.userId;
 
+  let user;
+
   //remove from followers
-  await User.findByIdAndUpdate(
+  user = await User.findByIdAndUpdate(
     userId,
     {
       $pull: { followers: currentId },
@@ -93,8 +131,8 @@ const unFollowUser = async (req, res) => {
     }
   );
 
-  //remove from follwoing
-  await User.findByIdAndUpdate(
+  //remove from following
+  user = await User.findByIdAndUpdate(
     currentId,
     {
       $pull: { following: userId },
@@ -102,7 +140,30 @@ const unFollowUser = async (req, res) => {
     { new: true }
   );
 
-  res.status(StatusCodes.OK).json("UnFollowing");
+ const token = jwt.sign(
+   {
+     userId: user._id,
+     username: user.username,
+     userEmail: user.email,
+     userFollowing: user.following,
+   },
+   process.env.JWT_SECRET,
+   { expiresIn: process.env.JWT_LIFETIME }
+ );
+
+ user.password = undefined;
+
+ res.status(StatusCodes.OK).json({
+   _id: user._id,
+   avatar: user.avatar,
+   bio: user.bio,
+   email: user.email,
+   fullName: user.fullName,
+   followers: user.followers,
+   following: user.following,
+   username: user.username,
+   token,
+ });
 };
 
 const userProfile = async (req, res) => {

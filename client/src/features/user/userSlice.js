@@ -7,6 +7,14 @@ import {
 } from "../../utils/localStorage";
 import { toast } from "react-toastify";
 
+axios.interceptors.request.use((config) => {
+  const user = getUserFromLocalStorage();
+  if (user) {
+    config.headers.common["authorization"] = `Bearer ${user.token}`;
+  }
+  return config;
+});
+
 export const registerUser = createAsyncThunk(
   "user/registerUser",
   async (user, thunkAPI) => {
@@ -37,11 +45,7 @@ export const getUserProfile = createAsyncThunk(
   "user/userProfile",
   async (id, thunkAPI) => {
     try {
-      const resp = await axios.get(`/api/v1/user/userProfile/${id}`, {
-        headers: {
-          authorization: `Bearer ${getUserFromLocalStorage().token}`,
-        },
-      });
+      const resp = await axios.get(`/api/v1/user/userProfile/${id}`);
 
       return resp.data;
     } catch (error) {
@@ -75,12 +79,58 @@ export const userUpdate = createAsyncThunk(
   async (user, thunkAPI) => {
     console.log(user);
     try {
-      const resp = await axios.patch("api/v1/user/user", user, {
+      const resp = await axios.patch("/api/v1/user/user", user, {
         headers: {
           authorization: `Bearer ${getUserFromLocalStorage().token}`,
         },
       });
       console.log(resp.data);
+      return resp.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.response.data.msg);
+    }
+  }
+);
+
+export const followUser = createAsyncThunk(
+  "user/followUser",
+  async ({ userId }, thunkAPI) => {
+    console.log(userId);
+    try {
+      const resp = await axios.patch(
+        `/api/v1/user/followUser`,
+        { userId },
+        {
+          headers: {
+            authorization: `Bearer ${getUserFromLocalStorage().token}`,
+          },
+        }
+      );
+      console.log(resp.data);
+      window.location.reload();
+      return resp.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.response.data.msg);
+    }
+  }
+);
+
+export const unFollowUser = createAsyncThunk(
+  "user/unFollowUser",
+  async ({ userId }, thunkAPI) => {
+    console.log(userId);
+    try {
+      const resp = await axios.patch(
+        `/api/v1/user/unFollowUser`,
+        { userId },
+        {
+          headers: {
+            authorization: `Bearer ${getUserFromLocalStorage().token}`,
+          },
+        }
+      );
+      console.log(resp.data);
+      window.location.reload();
       return resp.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.response.data.msg);
@@ -117,7 +167,7 @@ const userSlice = createSlice({
       const user = payload;
       state.user = user;
       addUserToLocalStorage(user);
-      toast.success(`Hi There!, ${user.user.username}`);
+      toast.success(`Hi There!, ${user.username}`);
     },
 
     [registerUser.rejected]: (state, { payload }) => {
@@ -134,7 +184,7 @@ const userSlice = createSlice({
       const user = payload;
       state.user = user;
       addUserToLocalStorage(user);
-      toast.success(`Welcome Back!, ${user.user.username}`);
+      toast.success(`Welcome Back!, ${user.username}`);
     },
 
     [loginUser.rejected]: (state, { payload }) => {
@@ -179,10 +229,46 @@ const userSlice = createSlice({
       state.isLoading = false;
       state.user = user;
       addUserToLocalStorage(user);
-      toast.success(`Your Profile Updated! ${user.user.username}`);
+      toast.success(`Your Profile Updated! ${user.username}`);
     },
 
     [userUpdate.rejected]: (state, { payload }) => {
+      state.isLoading = false;
+      toast.error(payload);
+    },
+
+    [followUser.pending]: (state) => {
+      state.isLoading = true;
+    },
+
+    [followUser.fulfilled]: (state, { payload }) => {
+      const user = payload;
+      console.log("Payload FollowUser", user);
+      state.isLoading = false;
+      state.user = user;
+      addUserToLocalStorage(user);
+      toast.success(`Followed SuccessFully!`);
+    },
+
+    [followUser.rejected]: (state, { payload }) => {
+      state.isLoading = false;
+      toast.error(payload);
+    },
+
+    [unFollowUser.pending]: (state) => {
+      state.isLoading = true;
+    },
+
+    [unFollowUser.fulfilled]: (state, { payload }) => {
+      const user = payload;
+      state.isLoading = false;
+      state.user = user;
+      console.log("Payload unFollowUser", user);
+      addUserToLocalStorage(user);
+      toast.success(`UnFollow SuccessFully!`);
+    },
+
+    [unFollowUser.rejected]: (state, { payload }) => {
       state.isLoading = false;
       toast.error(payload);
     },

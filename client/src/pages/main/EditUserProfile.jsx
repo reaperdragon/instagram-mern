@@ -4,7 +4,6 @@ import { FormRow } from "../../components";
 import styled from "styled-components";
 import FileBase64 from "react-file-base64";
 import { toast } from "react-toastify";
-import { SpinnerCircularSplit } from "spinners-react";
 import { userUpdate } from "../../features/user/userSlice";
 
 const EditUserProfile = () => {
@@ -15,11 +14,11 @@ const EditUserProfile = () => {
   console.log(user);
 
   const [userData, setDataUser] = useState({
-      username: user.user.username || "",
-      email:user.user.email || "",
-    fullName: user.user.fullName || "",
-    avatar: user.user.avatar || "",
-    bio: user.user.bio || "",
+    username: user.username || "",
+    email: user.email || "",
+    fullName: user.fullName || "",
+    avatar: user.avatar || "",
+    bio: user.bio || "",
   });
 
   const handleChange = (e) => {
@@ -29,20 +28,20 @@ const EditUserProfile = () => {
   const onSubmit = (e) => {
     e.preventDefault();
 
-    const { username,email, fullName, avatar, bio } = userData;
+    const { username, email, fullName, avatar, bio } = userData;
 
     if (!username || !email || !fullName || !avatar || !bio) {
       toast.error("Please Provide All Fields.");
       return;
     }
-    dispatch(userUpdate({ username,email, fullName, avatar, bio }));
+    dispatch(userUpdate({ username, email, fullName, avatar, bio }));
   };
 
   return (
     <Wrapper>
       <ContentWrapper>
         <ImageWrapper>
-          <img src={user.user.avatar} alt="profile" />
+          <img src={user.avatar} alt="profile" />
         </ImageWrapper>
 
         <DetailsWrapper>

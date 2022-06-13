@@ -58,7 +58,7 @@ const Feed = () => {
   const Likes = () => {
     if (feed?.payload?.feed?.likes?.length > 0) {
       return feed?.payload?.feed?.likes?.find(
-        (like) => like === user.user._id
+        (like) => like === user?._id
       ) ? (
         <>
           <Heart
@@ -131,7 +131,7 @@ const Feed = () => {
               </Link>
             </div>
             <div className="profile_container-header--more">
-              {feed?.payload?.feed?.postedBy?._id === user.user._id ? (
+              {feed?.payload?.feed?.postedBy?._id === user?._id ? (
                 <Trash size="32" color="#f47373" onClick={handleDelete}/>
               ) : (
                 <More size="24" color="#697689" className="more-icon" />
@@ -196,7 +196,7 @@ const Feed = () => {
               ))}
             </div>
             <form className="form" onSubmit={onSubmit}>
-              <img className="profile" src={user.user.avatar} alt="profile" />
+              <img className="profile" src={user?.avatar} alt="profile" />
               <FormRow
                 type="text"
                 placeholder="comment here"

@@ -2,7 +2,7 @@ import React from "react";
 import { SpinnerCircularSplit } from "spinners-react";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getUserProfile } from "../../features/user/userSlice";
+import { followUser, getUserProfile, unFollowUser } from "../../features/user/userSlice";
 
 import { logoutUser } from "../../features/user/userSlice";
 
@@ -21,6 +21,49 @@ const UserProfile = () => {
   }, [dispatch, id]);
 
   const { user, isLoading, userProfile } = useSelector((state) => state.user);
+
+  console.log(user)
+
+  console.log(userProfile?.payload?.user);
+
+  const handleFollow = (e) => {
+    e.preventDefault();
+    dispatch(followUser({userId:userProfile?.payload?.user?._id}));
+    console.log(userProfile?.payload?.user?._id);
+  };
+
+  const handleUnFollow = (e) => {
+    e.preventDefault();
+     dispatch(unFollowUser({ userId: userProfile?.payload?.user?._id }));
+     console.log(userProfile?.payload?.user?._id);
+  };
+
+  const FollowUnFollow = () => {
+    if (userProfile?.payload?.user?.followers?.length > 0) {
+      return userProfile?.payload?.user?.followers?.find(
+        (person) => person._id === user?._id
+      ) ? (
+        <>
+          <button className="button-unFollow" onClick={handleUnFollow}>
+            Following
+          </button>
+        </>
+      ) : (
+        <>
+          <button className="button-follow" onClick={handleFollow}>
+            Follow
+          </button>
+        </>
+      );
+    }
+    return (
+      <>
+        <button className="button-follow" onClick={handleFollow}>
+          Follow
+        </button>
+      </>
+    );
+  };
 
   if (isLoading) {
     return (
@@ -60,11 +103,11 @@ const UserProfile = () => {
                 <p>Following</p>
               </div>
             </div>
-            {userProfile?.payload?.user?._id === user?.user?._id ? (
+            {userProfile?.payload?.user?._id === user?._id ? (
               <>
                 {" "}
                 <button
-                  className="button"
+                  className="button-edit"
                   onClick={() => {
                     navigate("/editProfile");
                   }}
@@ -80,7 +123,7 @@ const UserProfile = () => {
                 </button>
               </>
             ) : (
-              <button className="button">Follow</button>
+              <FollowUnFollow />
             )}
           </div>
           <div>
@@ -158,7 +201,7 @@ const ContentWrapper = styled.div`
     text-align: center;
   }
 
-  .button {
+  .button-edit {
     width: 100%;
     border: none;
     margin: 10px 0;
@@ -167,6 +210,39 @@ const ContentWrapper = styled.div`
     font-weight: 500;
     font-size: 20px;
     line-height: 45px;
+    background: #ededed;
+    border: 1px solid #969696;
+    border-radius: 3px;
+    cursor: pointer;
+  }
+
+  .button-follow {
+    width: 100%;
+    border: none;
+    margin: 10px 0;
+    font-family: "Poppins";
+    font-style: normal;
+    font-weight: 500;
+    font-size: 20px;
+    line-height: 45px;
+    background: #0691f5;
+    border-radius: 3px;
+    color: white;
+    cursor: pointer;
+  }
+
+  .button-unFollow {
+    width: 100%;
+    border: none;
+    margin: 10px 0;
+    font-family: "Poppins";
+    font-style: normal;
+    font-weight: 500;
+    font-size: 20px;
+    line-height: 45px;
+    border: 1px solid #0691f5;
+    border-radius: 3px;
+    color: #0691f5;
     cursor: pointer;
   }
 
