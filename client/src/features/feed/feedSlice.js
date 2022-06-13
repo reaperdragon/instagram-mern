@@ -1,6 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
-import { Action } from "history";
 import { toast } from "react-toastify";
 import {
   getUserFromLocalStorage,
@@ -67,14 +66,13 @@ export const feedLikeDislike = createAsyncThunk(
 export const getFeed = createAsyncThunk(
   "feed/getFeed",
   async (id, thunkAPI) => {
-    console.log(id);
     try {
       const resp = await axios.get(`/api/v1/feed/${id}`, {
         headers: {
           authorization: `Bearer ${getUserFromLocalStorage().token}`,
         },
       });
-      console.log(resp.data);
+
       return resp.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.response.data.msg);
@@ -85,9 +83,26 @@ export const getFeed = createAsyncThunk(
 export const commentOnFeed = createAsyncThunk(
   "feed/commentOnFeed",
   async ({ postId, comment }, thunkAPI) => {
-    console.log(postId, comment);
     try {
       const resp = await axios.patch(`/api/v1/feed/${postId}`, { comment });
+
+      return resp.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.response.data.msg);
+    }
+  }
+);
+
+export const deleteFeed = createAsyncThunk(
+  "feed/deleteFeed",
+  async (postId, thunkAPI) => {
+    console.log(postId);
+    try {
+      const resp = await axios.delete(`/api/v1/feed/${postId}`, {
+        headers: {
+          authorization: `Bearer ${getUserFromLocalStorage().token}`,
+        },
+      });
       console.log(resp.data);
       return resp.data;
     } catch (error) {
@@ -164,6 +179,18 @@ export const feedSlice = createSlice({
       state.feeds = { ...state.feeds, payload };
     },
     [commentOnFeed.rejected]: (state, { payload }) => {
+      state.isLoading = false;
+      toast.error(payload);
+    },
+
+    [deleteFeed.pending]: (state) => {
+      state.isLoading = true;
+    },
+    [deleteFeed.fulfilled]: (state, action) => {
+      state.isLoading = false;
+      toast.success("Post Deleted!");
+    },
+    [deleteFeed.rejected]: (state, { payload }) => {
       state.isLoading = false;
       toast.error(payload);
     },
