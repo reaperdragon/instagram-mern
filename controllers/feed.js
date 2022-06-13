@@ -115,6 +115,28 @@ const currentUserFeeds = async (req, res) => {
   res.status(StatusCodes.OK).json({ feeds });
 };
 
+const commentOnFeed = async (req, res) => {
+  const { id: postId } = req.params;
+  const { comment } = req.body;
+
+  const commentObj = {
+    comment,
+    commentedBy: req.user.userId,
+  };
+
+  const commentFeed = await Feed.findByIdAndUpdate(
+    { _id: postId },
+    {
+      $push: { comments: commentObj },
+    },
+    {
+      new: true,
+    }
+  );
+
+  res.status(StatusCodes.OK).json(commentFeed);
+};
+
 export {
   getAllFeeds,
   getFeed,
@@ -123,4 +145,5 @@ export {
   likeFeed,
   getAllFollowingFeeds,
   currentUserFeeds,
+  commentOnFeed,
 };
