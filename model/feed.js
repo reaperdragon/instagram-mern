@@ -30,8 +30,8 @@ const feedSchema = new mongoose.Schema({
       commentedBy: {
         type: mongoose.Types.ObjectId,
         ref: "User",
-        commentTime: { type: Date, default: Date.now() },
       },
+      commentTime: { type: Date, default: Date.now()},
     },
   ],
 });

@@ -7,7 +7,7 @@ import { commentOnFeed, getFeed } from "../../features/feed/feedSlice";
 
 import { Link } from "react-router-dom";
 
-import { More, Heart, Message, Save2 } from "iconsax-react";
+import { More, Heart, Message, Save2, Send,Trash } from "iconsax-react";
 
 import { feedLikeDislike } from "../../features/feed/feedSlice.js";
 
@@ -49,6 +49,11 @@ const Feed = () => {
     );
     console.log(comment);
   };
+
+  const handleDelete = (e) => {
+    e.preventDefault();
+    
+  }
 
   const Likes = () => {
     if (feed?.payload?.feed?.likes?.length > 0) {
@@ -126,7 +131,11 @@ const Feed = () => {
               </Link>
             </div>
             <div className="profile_container-header--more">
-              <More size="24" color="#697689" className="more-icon" />
+              {feed?.payload?.feed?.postedBy?._id === user.user._id ? (
+                <Trash size="32" color="#f47373" onClick={handleDelete}/>
+              ) : (
+                <More size="24" color="#697689" className="more-icon" />
+              )}
             </div>
           </div>
 
@@ -160,18 +169,49 @@ const Feed = () => {
         </div>
 
         <div className="comment_container">
-          <form className="form" onSubmit={onSubmit}>
-            <FormRow
-              type="text"
-              placeholder="comment here"
-              name="comment"
-              value={values.comment}
-              handleChange={handleChange}
-            />
-            <button type="submit" className="comment_container-comment--button">
-              Comment
-            </button>
-          </form>
+          <h1 className="comment_container--comment"> Comments</h1>
+          <div className="comment_container-main">
+            <div className="comment_container-comments">
+              {feed?.payload?.feed?.comments.map((comment) => (
+                <div className="comment_container-comment" key={comment._id}>
+                  <img
+                    src={comment.commentedBy.avatar}
+                    alt="profile"
+                    className="comment_container-comment--profile"
+                  />
+                  <div className="comment_container-comment-details">
+                    <div className="comment_container-comment-details-username-date">
+                      <p className="comment_container-comment--username">
+                        {comment.commentedBy.username}
+                      </p>
+                      <p className="comment_container-comment--comment--time">
+                        {moment(comment?.commentTime).fromNow()}
+                      </p>
+                    </div>
+                    <span className="comment_container-comment--comment">
+                      {comment.comment}
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <form className="form" onSubmit={onSubmit}>
+              <img className="profile" src={user.user.avatar} alt="profile" />
+              <FormRow
+                type="text"
+                placeholder="comment here"
+                name="comment"
+                value={values.comment}
+                handleChange={handleChange}
+              />
+              <button
+                type="submit"
+                className="comment_container-comment--button"
+              >
+                <Send size="32" color="#d9e3f0" />
+              </button>
+            </form>
+          </div>
         </div>
       </ContentWrapper>
     </Wrapper>
@@ -194,7 +234,7 @@ const ContentWrapper = styled.div`
   max-width: 1200px;
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  grid-gap: 10px;
+  grid-gap: 5px;
   align-items: center;
   justify-content: center;
   margin: 0 auto;
@@ -204,7 +244,7 @@ const ContentWrapper = styled.div`
   }
 
   .profile_container {
-    width: 700px;
+    width: 600px;
     height: max-content;
     display: flex;
     align-items: center;
@@ -216,9 +256,8 @@ const ContentWrapper = styled.div`
     overflow-x: hidden;
 
     @media only screen and (max-width: 628px) {
-      max-width: 96vw;
+      max-width: 97vw;
       margin: 10px 0;
-      justify-content: center;
     }
   }
 
@@ -251,6 +290,10 @@ const ContentWrapper = styled.div`
 
   .profile_container-post {
     width: 100%;
+    height: 60vh;
+    @media only screen and (max-width: 628px) {
+      height: max-content;
+    }
   }
 
   .profile_container-header--user-avatar {
@@ -313,12 +356,23 @@ const ContentWrapper = styled.div`
     cursor: pointer;
   }
 
+  .comment_container {
+  }
+
+  .comment_container-main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: top;
+    height: max-content;
+  }
+
   .form {
     display: flex;
     align-items: center;
     justify-content: center;
     flex-direction: row;
-    padding: 20px 0;
+
     background: white;
     width: 100%;
     gap: 10px;
@@ -336,6 +390,10 @@ const ContentWrapper = styled.div`
     font-family: "Poppins", sans-serif;
     outline: none;
     transition: all 0.3s ease-in-out;
+
+    @media only screen and (max-width: 628px) {
+      width: 70%;
+    }
   }
   input:focus {
     color: black;
@@ -354,9 +412,11 @@ const ContentWrapper = styled.div`
     font-family: "Inter";
     font-style: normal;
     font-weight: 400;
-
+    display: flex;
+    align-items: center;
+    justify-content: center;
     line-height: 36px;
-    padding: 5px 5px;
+    padding: 7px 7px;
     cursor: pointer;
     color: white;
     transition: all 0.3s ease-in-out;
@@ -366,5 +426,67 @@ const ContentWrapper = styled.div`
       background: #0691f5;
       box-shadow: 0px 4px 4px rgba(36, 130, 217, 0.35);
     }
+  }
+
+  .comment_container-comments {
+    width: 95%;
+    height: 500px;
+    margin: 10px 0;
+    border: 1px solid #929292;
+    padding: 10px;
+    font-family: "Poppins", sans-serif;
+    align-self: top;
+    overflow-y: scroll;
+  }
+
+  .profile {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+  }
+
+  .comment_container-comment-details-username-date {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .comment_container-comment {
+    display: flex;
+    align-items: left;
+    margin: 10px 0;
+    gap: 10px;
+  }
+
+  .comment_container-comment--profile {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+  }
+
+  .comment_container-comment--username {
+    font-family: "Poppins";
+    font-style: normal;
+    font-weight: 500;
+    font-size: 15px;
+    line-height: 30px;
+  }
+
+  .comment_container-comment--comment {
+    color: #a8a8a8;
+  }
+
+  .comment_container-comment--comment--time {
+    align-self: top;
+    right: 0;
+    font-size: 12px;
+  }
+
+  .comment_container--comment {
+    font-family: "Poppins";
+    font-style: normal;
+    font-weight: 700;
+    font-size: 30px;
+    line-height: 45px;
   }
 `;
