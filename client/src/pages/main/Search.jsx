@@ -6,9 +6,7 @@ import { searchUser } from "../../features/user/userSlice";
 
 import { SpinnerCircularSplit } from "spinners-react";
 
-import Image from "../../assets/img/instagram logo.svg";
-
-import { Heart, LikeShapes, Message } from "iconsax-react";
+import { Heart, Message } from "iconsax-react";
 import { useEffect } from "react";
 import { getAllFeeds } from "../../features/feed/feedSlice";
 

@@ -3,11 +3,15 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
-import { commentOnFeed, getFeed } from "../../features/feed/feedSlice";
+import {
+  commentOnFeed,
+  deleteFeed,
+  getFeed,
+} from "../../features/feed/feedSlice";
 
 import { Link } from "react-router-dom";
 
-import { More, Heart, Message, Save2, Send,Trash } from "iconsax-react";
+import { More, Heart, Message, Save2, Send, Trash } from "iconsax-react";
 
 import { feedLikeDislike } from "../../features/feed/feedSlice.js";
 
@@ -52,14 +56,12 @@ const Feed = () => {
 
   const handleDelete = (e) => {
     e.preventDefault();
-    
-  }
+    dispatch(deleteFeed(feed?.payload?.feed?._id));
+  };
 
   const Likes = () => {
     if (feed?.payload?.feed?.likes?.length > 0) {
-      return feed?.payload?.feed?.likes?.find(
-        (like) => like === user?._id
-      ) ? (
+      return feed?.payload?.feed?.likes?.find((like) => like === user?._id) ? (
         <>
           <Heart
             size="32"
@@ -132,7 +134,12 @@ const Feed = () => {
             </div>
             <div className="profile_container-header--more">
               {feed?.payload?.feed?.postedBy?._id === user?._id ? (
-                <Trash size="32" color="#f47373" onClick={handleDelete}/>
+                <Trash
+                  size="32"
+                  color="#f47373"
+                  className="delete-button"
+                  onClick={handleDelete}
+                />
               ) : (
                 <More size="24" color="#697689" className="more-icon" />
               )}
@@ -282,6 +289,10 @@ const ContentWrapper = styled.div`
       display: flex;
       gap: 10px;
     }
+  }
+
+  .delete-button {
+    cursor: pointer;
   }
 
   .profile_container-post-link {
