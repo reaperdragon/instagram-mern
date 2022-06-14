@@ -141,7 +141,7 @@ const getAllComments = async (req, res) => {
   const { id: postId } = req.params;
 
   const feedComment = await Feed.findOne({ _id: postId })
-    .sort("-comments.commentedBy.commentTime")
+    .sort("-comments.commentTime")
     .populate("comments.commentedBy", "_id username fullName email avatar bio");
 
   res.status(StatusCodes.OK).json(feedComment);

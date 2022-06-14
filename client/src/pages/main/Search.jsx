@@ -6,12 +6,26 @@ import { searchUser } from "../../features/user/userSlice";
 
 import { SpinnerCircularSplit } from "spinners-react";
 
+import Image from "../../assets/img/instagram logo.svg";
+
+import { Heart, LikeShapes, Message } from "iconsax-react";
+import { useEffect } from "react";
+import { getAllFeeds } from "../../features/feed/feedSlice";
+
 const Search = () => {
   const [value, setValue] = useState("");
 
   const { users, isLoading } = useSelector((state) => state.user);
 
+  const { feeds } = useSelector((state) => state.feed);
+
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(getAllFeeds());
+  }, [dispatch]);
+
+  console.log(feeds[0]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -48,10 +62,34 @@ const Search = () => {
             Search
           </button>
         </div>
+      </ContentWrapper>
 
-        {!value ? (
-          <p>Search User</p>
-        ) : (
+      {!value ? (
+        <div className="image-gallery">
+          {feeds[0]?.feed?.map((data) => {
+            return (
+              <div className="image-box" key={data?._id}>
+                <Link to={`/feed/${data?._id}`}>
+                  <img src={data?.post} alt="feed" />
+                  <div className="overlay">
+                    <div className="details">
+                      <h3 className="likes">
+                        <Heart size="32" color="#d9e3f0" variant="Bold" />{" "}
+                        <h3 className="detail">{data?.likes?.length}</h3>
+                      </h3>
+                      <h3 className="comments">
+                        <Message size="32" color="#d9e3f0" variant="Bold" />{" "}
+                        <h3 className="detail">{data?.comments.length}</h3>
+                      </h3>
+                    </div>
+                  </div>
+                </Link>
+              </div>
+            );
+          })}
+        </div>
+      ) : (
+        <ContentWrapper>
           <div className="users">
             {users?.user?.map((data, index) => (
               <div className="user_container" key={data._id}>
@@ -66,10 +104,8 @@ const Search = () => {
               </div>
             ))}
           </div>
-        )}
-
-        <div className="container"></div>
-      </ContentWrapper>
+        </ContentWrapper>
+      )}
     </Wrapper>
   );
 };
@@ -84,7 +120,155 @@ const Loader = styled.div`
   justify-content: center;
 `;
 
-const Wrapper = styled.div``;
+const Wrapper = styled.div`
+  position: relative;
+
+  .image-gallery {
+    width: 100%;
+    max-width: 950px;
+    margin: 0 auto;
+    padding: 50px 20px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    grid-auto-rows: 250px;
+    grid-auto-flow: dense;
+    grid-gap: 20px;
+    overflow-x: hidden;
+
+    @media only screen and (max-width: 768px) {
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      grid-auto-rows: 250px;
+      padding: 50px 0;
+    }
+  }
+
+  .image-gallery .image-box {
+    position: relative;
+    background-color: #d7d7d8;
+    overflow: hidden;
+  }
+
+  .image-gallery .image-box:nth-child(7n + 1) {
+    grid-column: span 2;
+    grid-row: span 2;
+
+    @media only screen and (max-width: 768px) {
+      grid-column: unset;
+      grid-row: unset;
+    }
+  }
+
+  .image-gallery .image-box img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: all 0.5s ease;
+    cursor: pointer;
+  }
+
+  .image-gallery .image-box img:hover {
+    transform: scale(1.1);
+  }
+
+  .image-gallery .image-box .overlay {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background: #697689;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: all 0.5s ease;
+    z-index: 1;
+  }
+
+  .image-gallery .image-box:hover .overlay {
+    top: 20;
+    right: 20;
+    left: 20;
+    opacity: 1;
+  }
+
+  .image-gallery .image-box .details {
+    text-align: center;
+  }
+
+  .image-gallery .image-box .details .likes {
+    margin-bottom: 8px;
+    font-size: 24px;
+    font-weight: 600;
+    position: relative;
+    top: -5;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+
+    &:a {
+      text-decoration: none;
+      color: #697689;
+    }
+  }
+
+  .image-gallery .image-box .details .likes .detail {
+    color: #d9e3f0;
+    text-decoration: none;
+  }
+
+  .image-gallery .image-box .details .comments {
+    font-size: 24px;
+    font-weight: 600;
+    position: relative;
+    bottom: -5px;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+
+    &:a {
+      text-decoration: none;
+      color: #697689;
+    }
+  }
+
+  .image-gallery .image-box .details .comments .detail {
+    color: #d9e3f0;
+    text-decoration: none;
+  }
+
+  .image-gallery .image-box:hover .details .likes {
+    top: 0;
+    opacity: 1;
+    visibility: visible;
+    transition: all 0.3s 0.2s ease;
+
+    &:a {
+      text-decoration: none;
+      color: #697689;
+    }
+  }
+
+  .image-gallery .image-box:hover .details .comments {
+    bottom: 0;
+    opacity: 1;
+    visibility: visible;
+    transition: all 0.3s 0.2s ease;
+
+    &:a {
+      text-decoration: none;
+      color: #697689;
+    }
+  }
+`;
 const ContentWrapper = styled.div`
   max-width: 1234px;
   margin: 0 auto;
@@ -104,6 +288,10 @@ const ContentWrapper = styled.div`
     outline: none;
     transition: all 0.3s ease-in-out;
     font-family: "Poppins", sans-serif;
+
+    @media only screen and (max-width: 768px) {
+      width: 300px;
+    }
   }
 
   input:focus {
@@ -184,8 +372,5 @@ const ContentWrapper = styled.div`
     line-height: 30px;
     color: #7c7c7c;
     color: #141414;
-  }
-
-  .container {
   }
 `;

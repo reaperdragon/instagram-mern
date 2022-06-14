@@ -111,6 +111,23 @@ export const deleteFeed = createAsyncThunk(
   }
 );
 
+export const getAllFeeds = createAsyncThunk(
+  "feed/getAllFeeds",
+  async (_, thunkAPI) => {
+    try {
+      const resp = await axios.get(`/api/v1/feed/`, {
+        headers: {
+          authorization: `Bearer ${getUserFromLocalStorage().token}`,
+        },
+      });
+      console.log(resp.data);
+      return resp.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.response.data.msg);
+    }
+  }
+);
+
 const initialState = {
   feeds: [],
   feed: {},
@@ -191,6 +208,18 @@ export const feedSlice = createSlice({
       toast.success("Post Deleted!");
     },
     [deleteFeed.rejected]: (state, { payload }) => {
+      state.isLoading = false;
+      toast.error(payload);
+    },
+
+    [getAllFeeds.pending]: (state) => {
+      state.isLoading = true;
+    },
+    [getAllFeeds.fulfilled]: (state, {payload}) => {
+      state.isLoading = false;
+      state.feeds = [...state.feeds,payload];
+    },
+    [getAllFeeds.rejected]: (state, { payload }) => {
       state.isLoading = false;
       toast.error(payload);
     },
