@@ -7,7 +7,7 @@ import { SpinnerCircularSplit } from "spinners-react";
 
 import { followUserFeeds } from "../../features/feed/feedSlice.js";
 
-import PostContainer from "../../components/PostContainer.jsx";
+import PostContainer from "../../components/PostContainer.js";
 
 const Home = () => {
   const { isLoading, followingUserFeeds } = useSelector((state) => state.feed);
