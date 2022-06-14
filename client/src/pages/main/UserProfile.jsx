@@ -13,7 +13,7 @@ import { logoutUser } from "../../features/user/userSlice";
 import styled from "styled-components";
 import { useNavigate, useParams, Link } from "react-router-dom";
 
-import {Heart,Message} from 'iconsax-react'
+import { Heart, Message } from "iconsax-react";
 
 const UserProfile = () => {
   const { id } = useParams();
@@ -28,21 +28,14 @@ const UserProfile = () => {
 
   const { user, isLoading, userProfile } = useSelector((state) => state.user);
 
-  console.log(user);
-
-  console.log(userProfile?.payload);
-  console.log(userProfile?.payload?.user);
-
   const handleFollow = (e) => {
     e.preventDefault();
     dispatch(followUser({ userId: userProfile?.payload?.user?._id }));
-    console.log(userProfile?.payload?.user?._id);
   };
 
   const handleUnFollow = (e) => {
     e.preventDefault();
     dispatch(unFollowUser({ userId: userProfile?.payload?.user?._id }));
-    console.log(userProfile?.payload?.user?._id);
   };
 
   const FollowUnFollow = () => {
@@ -147,7 +140,11 @@ const UserProfile = () => {
             return (
               <Link to={`/feed/${data?._id}`} className="post">
                 <figure class="post-image">
-                  <img src={data?.post} alt="profile-post" className="post-main" />
+                  <img
+                    src={data?.post}
+                    alt="profile-post"
+                    className="post-main"
+                  />
                 </figure>
                 <span class="post-overlay">
                   <p>
@@ -168,7 +165,6 @@ const UserProfile = () => {
           })}
         </section>
       </SectionWrapper>
-
     </>
   );
 };
@@ -300,7 +296,6 @@ const ContentWrapper = styled.div`
     color: #4e4e4e;
   }
 
-  
   .btn-logout {
     width: 100%;
     height: 50px;
@@ -322,8 +317,6 @@ const ContentWrapper = styled.div`
       color: white;
     }
   }
-
-  
 `;
 
 const SectionWrapper = styled.div`
@@ -376,7 +369,8 @@ const SectionWrapper = styled.div`
     font-family: "Poppins";
   }
 
-  .post-likes, .post-comments {
+  .post-likes,
+  .post-comments {
     width: 80px;
     margin: 5px;
     font-weight: bold;

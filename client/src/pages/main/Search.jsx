@@ -23,8 +23,6 @@ const Search = () => {
     dispatch(getAllFeeds());
   }, [dispatch]);
 
-  console.log(feeds[0]);
-
   const handleSubmit = (e) => {
     e.preventDefault();
     dispatch(searchUser(value));
@@ -120,6 +118,7 @@ const Loader = styled.div`
 
 const Wrapper = styled.div`
   position: relative;
+  font-family:"Poppins",sans-serif ;
 
   .image-gallery {
     width: 100%;

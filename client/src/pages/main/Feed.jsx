@@ -30,16 +30,11 @@ const Feed = () => {
 
   const { user } = useSelector((state) => state.user);
 
-  console.log(user);
-
   const dispatch = useDispatch();
 
   useEffect(() => {
     dispatch(getFeed(id));
   }, [dispatch, id]);
-
-  console.log(feed);
-  console.log(feed?.payload?.feed);
 
   const handleChange = (e) => {
     setValues({ ...values, [e.target.name]: e.target.value });
@@ -51,7 +46,6 @@ const Feed = () => {
     await dispatch(
       commentOnFeed({ postId: feed?.payload?.feed?._id, comment: comment })
     );
-    console.log(comment);
   };
 
   const handleDelete = (e) => {

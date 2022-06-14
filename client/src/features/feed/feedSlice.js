@@ -96,14 +96,14 @@ export const commentOnFeed = createAsyncThunk(
 export const deleteFeed = createAsyncThunk(
   "feed/deleteFeed",
   async (postId, thunkAPI) => {
-    console.log(postId);
+    
     try {
       const resp = await axios.delete(`/api/v1/feed/${postId}`, {
         headers: {
           authorization: `Bearer ${getUserFromLocalStorage().token}`,
         },
       });
-      console.log(resp.data);
+    
       return resp.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.response.data.msg);
@@ -120,7 +120,6 @@ export const getAllFeeds = createAsyncThunk(
           authorization: `Bearer ${getUserFromLocalStorage().token}`,
         },
       });
-      console.log(resp.data);
       return resp.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.response.data.msg);
@@ -215,9 +214,9 @@ export const feedSlice = createSlice({
     [getAllFeeds.pending]: (state) => {
       state.isLoading = true;
     },
-    [getAllFeeds.fulfilled]: (state, {payload}) => {
+    [getAllFeeds.fulfilled]: (state, { payload }) => {
       state.isLoading = false;
-      state.feeds = [...state.feeds,payload];
+      state.feeds = [...state.feeds, payload];
     },
     [getAllFeeds.rejected]: (state, { payload }) => {
       state.isLoading = false;

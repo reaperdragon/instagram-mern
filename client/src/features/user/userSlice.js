@@ -77,14 +77,13 @@ export const searchUser = createAsyncThunk(
 export const userUpdate = createAsyncThunk(
   "user/userUpdate",
   async (user, thunkAPI) => {
-    console.log(user);
     try {
       const resp = await axios.patch("/api/v1/user/user", user, {
         headers: {
           authorization: `Bearer ${getUserFromLocalStorage().token}`,
         },
       });
-      console.log(resp.data);
+
       return resp.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.response.data.msg);
@@ -95,7 +94,6 @@ export const userUpdate = createAsyncThunk(
 export const followUser = createAsyncThunk(
   "user/followUser",
   async ({ userId }, thunkAPI) => {
-    console.log(userId);
     try {
       const resp = await axios.patch(
         `/api/v1/user/followUser`,
@@ -106,7 +104,6 @@ export const followUser = createAsyncThunk(
           },
         }
       );
-      console.log(resp.data);
       window.location.reload();
       return resp.data;
     } catch (error) {
@@ -118,7 +115,6 @@ export const followUser = createAsyncThunk(
 export const unFollowUser = createAsyncThunk(
   "user/unFollowUser",
   async ({ userId }, thunkAPI) => {
-    console.log(userId);
     try {
       const resp = await axios.patch(
         `/api/v1/user/unFollowUser`,
@@ -129,7 +125,6 @@ export const unFollowUser = createAsyncThunk(
           },
         }
       );
-      console.log(resp.data);
       window.location.reload();
       return resp.data;
     } catch (error) {
@@ -243,7 +238,6 @@ const userSlice = createSlice({
 
     [followUser.fulfilled]: (state, { payload }) => {
       const user = payload;
-      console.log("Payload FollowUser", user);
       state.isLoading = false;
       state.user = user;
       addUserToLocalStorage(user);
@@ -263,7 +257,6 @@ const userSlice = createSlice({
       const user = payload;
       state.isLoading = false;
       state.user = user;
-      console.log("Payload unFollowUser", user);
       addUserToLocalStorage(user);
       toast.success(`UnFollow SuccessFully!`);
     },

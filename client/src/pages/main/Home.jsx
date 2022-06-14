@@ -14,15 +14,11 @@ const Home = () => {
 
   const { user } = useSelector((state) => state.user);
 
-  console.log(user._id)
-
   const dispatch = useDispatch();
-
-  console.log(followingUserFeeds);
 
   useEffect(() => {
     dispatch(followUserFeeds());
-  }, [dispatch,user]);
+  }, [dispatch, user]);
 
   if (isLoading) {
     return (
@@ -41,9 +37,15 @@ const Home = () => {
   return (
     <Wrapper>
       <ContentWrapper>
-        {followingUserFeeds[0]?.followingFeeds?.map((data) => (
-          <PostContainer data={data} key={data?._id} />
-        ))}
+        {followingUserFeeds[0]?.followingFeeds?.length > 0 ? (
+          <>
+            {followingUserFeeds[0]?.followingFeeds?.map((data) => (
+              <PostContainer data={data} key={data?._id} />
+            ))}
+          </>
+        ) : (
+          <div className="message">Please Follow Someone to See Here Posts</div>
+        )}
       </ContentWrapper>
     </Wrapper>
   );
@@ -68,4 +70,9 @@ const ContentWrapper = styled.div`
   align-items: center;
   justify-content: center;
   margin: 0 auto;
+
+  .message {
+    font-family: "Poppins";
+    font-size: 40px;
+  }
 `;

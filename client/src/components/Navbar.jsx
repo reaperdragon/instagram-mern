@@ -1,13 +1,13 @@
 import React from "react";
 import Logo from "../assets/img/instagram logo.svg";
 import styled from "styled-components";
-import { Link, NavLink } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import { Home2, SearchNormal, Export } from "iconsax-react";
 
 import { useSelector } from "react-redux";
 
 const Navbar = () => {
-  const { user, isLoading } = useSelector((state) => state.user);
+  const { user } = useSelector((state) => state.user);
 
   return (
     <Wrapper>

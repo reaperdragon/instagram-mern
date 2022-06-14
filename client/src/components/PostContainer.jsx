@@ -88,7 +88,6 @@ const PostContainer = ({ data }) => {
             </p>
 
             {data?.comments?.slice(0, 2).map((comment) => {
-              console.log(comment);
               return (
                 <p
                   className="profile_container-footer-caption--comment-text"

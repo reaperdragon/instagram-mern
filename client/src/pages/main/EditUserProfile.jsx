@@ -11,8 +11,6 @@ const EditUserProfile = () => {
 
   const dispatch = useDispatch();
 
-  console.log(user);
-
   const [userData, setDataUser] = useState({
     username: user.username || "",
     email: user.email || "",
