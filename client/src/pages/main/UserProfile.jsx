@@ -2,12 +2,18 @@ import React from "react";
 import { SpinnerCircularSplit } from "spinners-react";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { followUser, getUserProfile, unFollowUser } from "../../features/user/userSlice";
+import {
+  followUser,
+  getUserProfile,
+  unFollowUser,
+} from "../../features/user/userSlice";
 
 import { logoutUser } from "../../features/user/userSlice";
 
 import styled from "styled-components";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, Link } from "react-router-dom";
+
+import {Heart,Message} from 'iconsax-react'
 
 const UserProfile = () => {
   const { id } = useParams();
@@ -22,20 +28,21 @@ const UserProfile = () => {
 
   const { user, isLoading, userProfile } = useSelector((state) => state.user);
 
-  console.log(user)
+  console.log(user);
 
+  console.log(userProfile?.payload);
   console.log(userProfile?.payload?.user);
 
   const handleFollow = (e) => {
     e.preventDefault();
-    dispatch(followUser({userId:userProfile?.payload?.user?._id}));
+    dispatch(followUser({ userId: userProfile?.payload?.user?._id }));
     console.log(userProfile?.payload?.user?._id);
   };
 
   const handleUnFollow = (e) => {
     e.preventDefault();
-     dispatch(unFollowUser({ userId: userProfile?.payload?.user?._id }));
-     console.log(userProfile?.payload?.user?._id);
+    dispatch(unFollowUser({ userId: userProfile?.payload?.user?._id }));
+    console.log(userProfile?.payload?.user?._id);
   };
 
   const FollowUnFollow = () => {
@@ -132,17 +139,36 @@ const UserProfile = () => {
             <p className="bio">{userProfile?.payload?.user?.bio}</p>
           </div>
         </div>
+      </ContentWrapper>
 
-        <div className="users_posts">
+      <SectionWrapper>
+        <section class="post-list">
           {userProfile?.payload?.feed?.map((data) => {
             return (
-              <div key={data?._id}>
-                <img src={data?.post} alt="post" />
-              </div>
+              <Link to={`/feed/${data?._id}`} className="post">
+                <figure class="post-image">
+                  <img src={data?.post} alt="profile-post" className="post-main" />
+                </figure>
+                <span class="post-overlay">
+                  <p>
+                    <span class="post-likes">
+                      {" "}
+                      <Heart size="32" color="#697689" variant="Bold" />
+                      {data?.likes?.length}
+                    </span>
+                    <span class="post-comments">
+                      {" "}
+                      <Message size="32" color="#697689" variant="Bold" />
+                      {data?.comments?.length}
+                    </span>
+                  </p>
+                </span>
+              </Link>
             );
           })}
-        </div>
-      </ContentWrapper>
+        </section>
+      </SectionWrapper>
+
     </>
   );
 };
@@ -274,17 +300,7 @@ const ContentWrapper = styled.div`
     color: #4e4e4e;
   }
 
-  .users_posts {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    grid-gap: 20px;
-
-    img {
-      width: 100%;
-      height: 350px;
-    }
-  }
-
+  
   .btn-logout {
     width: 100%;
     height: 50px;
@@ -304,6 +320,77 @@ const ContentWrapper = styled.div`
       box-shadow: 0px 10px 20px rgba(253, 57, 57, 0.5);
       transform: translate(0, -5px);
       color: white;
+    }
+  }
+
+  
+`;
+
+const SectionWrapper = styled.div`
+  .post-list {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(100px, 293px));
+    justify-content: center;
+    grid-gap: 28px;
+  }
+  .post {
+    cursor: pointer;
+    position: relative;
+    display: block;
+    transition: all 0.3s ease-in-out;
+
+    .post:hover .post-overlay {
+      display: flex;
+    }
+  }
+  .post-image {
+    margin: 0;
+    width: 100%;
+    height: 100%;
+    transition: all 0.3s ease-in-out;
+  }
+  .post-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: all 0.5s ease;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+  }
+  .post-overlay {
+    background: rgba(0, 0, 0, 0.4);
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    top: 0;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    text-align: center;
+    transition: all 0.3s ease-in-out;
+  }
+  .post:hover .post-overlay {
+    display: flex;
+    font-family: "Poppins";
+  }
+
+  .post-likes, .post-comments {
+    width: 80px;
+    margin: 5px;
+    font-weight: bold;
+    text-align: center;
+    display: inline-block;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+  }
+
+  @media screen and (max-width: 768px) {
+    .post-list {
+      grid-gap: 3px;
     }
   }
 `;
