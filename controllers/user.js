@@ -99,19 +99,17 @@ const followUser = async (req, res) => {
 
   user.password = undefined;
 
-  res
-    .status(StatusCodes.OK)
-    .json({
-      _id: user._id,
-      avatar: user.avatar,
-      bio: user.bio,
-      email: user.email,
-      fullName: user.fullName,
-      followers: user.followers,
-      following: user.following,
-      username: user.username,
-      token,
-    });
+  res.status(StatusCodes.OK).json({
+    _id: user._id,
+    avatar: user.avatar,
+    bio: user.bio,
+    email: user.email,
+    fullName: user.fullName,
+    followers: user.followers,
+    following: user.following,
+    username: user.username,
+    token,
+  });
 };
 
 const unFollowUser = async (req, res) => {
@@ -140,30 +138,30 @@ const unFollowUser = async (req, res) => {
     { new: true }
   );
 
- const token = jwt.sign(
-   {
-     userId: user._id,
-     username: user.username,
-     userEmail: user.email,
-     userFollowing: user.following,
-   },
-   process.env.JWT_SECRET,
-   { expiresIn: process.env.JWT_LIFETIME }
- );
+  const token = jwt.sign(
+    {
+      userId: user._id,
+      username: user.username,
+      userEmail: user.email,
+      userFollowing: user.following,
+    },
+    process.env.JWT_SECRET,
+    { expiresIn: process.env.JWT_LIFETIME }
+  );
 
- user.password = undefined;
+  user.password = undefined;
 
- res.status(StatusCodes.OK).json({
-   _id: user._id,
-   avatar: user.avatar,
-   bio: user.bio,
-   email: user.email,
-   fullName: user.fullName,
-   followers: user.followers,
-   following: user.following,
-   username: user.username,
-   token,
- });
+  res.status(StatusCodes.OK).json({
+    _id: user._id,
+    avatar: user.avatar,
+    bio: user.bio,
+    email: user.email,
+    fullName: user.fullName,
+    followers: user.followers,
+    following: user.following,
+    username: user.username,
+    token,
+  });
 };
 
 const userProfile = async (req, res) => {
@@ -179,7 +177,7 @@ const userProfile = async (req, res) => {
 
   //feed count
   feed.map((data, index) => {
-    return { ...data._doc,liked:data.likes.includes(user_id) };
+    return { ...data._doc, liked: data.likes.includes(user_id) };
   });
 
   user.password = undefined;
@@ -201,7 +199,9 @@ const userProfile = async (req, res) => {
 const searchUser = async (req, res) => {
   const { search } = req.query;
 
-  const user = await User.find({ username: { $regex: search, $options: "i" } });
+  const user = await User.find({
+    username: { $regex: search, $options: "i" },
+  }).select("-password");
   res.status(StatusCodes.OK).json({ user });
 };
 
